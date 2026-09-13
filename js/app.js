@@ -334,4 +334,185 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnTerminateSessions) {
     btnTerminateSessions.onclick = () => SecurityModule.terminateOtherSessions();
   }
+
+  // --------------------------------------------------------------------------
+  // 8. MULTIPLATFORM PWA CONTROLLER & KEYBOARD ACCESSIBILITY
+  // --------------------------------------------------------------------------
+  AppPwaModule.init();
+
+  // Desktop Keyboard Shortcuts
+  window.addEventListener('keydown', (e) => {
+    // Press '/' to search galleries when not focused on an input
+    if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+      e.preventDefault();
+      const searchInput = document.getElementById('gal-search-input');
+      if (searchInput) {
+        searchInput.focus();
+        if (window.NotificationCenter) NotificationCenter.info('Foco na busca de galerias (Atalho "/")', 'Navegação');
+      }
+    }
+  });
 });
+
+// ==========================================================================
+// PWA & CROSS-PLATFORM COMPONENT MODULE
+// ==========================================================================
+const AppPwaModule = (() => {
+  let deferredPrompt = null;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+  function init() {
+    // 1. Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then((reg) => {
+          console.log('[PicDrop PWA] Service Worker registrado com sucesso:', reg.scope);
+        }).catch((err) => {
+          console.warn('[PicDrop PWA] Falha ao registrar Service Worker:', err);
+        });
+      });
+    }
+
+    // 2. Capture install prompt (Chrome / Edge / Android / Desktop)
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      console.log('[PicDrop PWA] Evento beforeinstallprompt capturado');
+    });
+
+    // 3. Track install success
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      closeInstallModal();
+      if (window.NotificationCenter) {
+        NotificationCenter.success('Aplicativo PicDrop instalado com sucesso no seu dispositivo!', 'Instalação Concluída');
+      }
+    });
+
+    // 4. Update UI if already running as standalone app
+    if (isStandalone) {
+      document.body.classList.add('pwa-standalone-mode');
+      document.querySelectorAll('.btn-install-pwa').forEach(btn => btn.style.display = 'none');
+    }
+  }
+
+  function promptInstall() {
+    const modal = document.getElementById('modal-pwa-install');
+    const guideEl = document.getElementById('pwa-install-platform-guide');
+    const btnDirect = document.getElementById('btn-pwa-direct-install');
+    const btnText = document.getElementById('btn-pwa-install-text');
+
+    if (!modal) return;
+
+    if (isIOS) {
+      if (guideEl) {
+        guideEl.innerHTML = `
+          <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:12px;">
+            <span style="background:rgba(37,99,235,0.25); color:#60a5fa; font-weight:700; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">1</span>
+            <span>No <strong>Safari do iPhone / iPad</strong>, toque no ícone de <strong>Compartilhar</strong> (quadrado com a seta para cima ⎋) na barra inferior.</span>
+          </div>
+          <div style="display:flex; align-items:flex-start; gap:10px;">
+            <span style="background:rgba(37,99,235,0.25); color:#60a5fa; font-weight:700; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">2</span>
+            <span>Role a lista e toque em <strong>"Adicionar à Tela de Início"</strong> ➕ para criar o ícone nativo do PicDrop.</span>
+          </div>
+        `;
+      }
+      if (btnDirect) btnDirect.style.display = 'none';
+    } else if (deferredPrompt) {
+      if (guideEl) {
+        guideEl.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.3rem;">📲</span>
+            <span>Clique no botão abaixo para instalar o PicDrop diretamente na tela inicial do seu celular ou área de trabalho do computador.</span>
+          </div>
+        `;
+      }
+      if (btnDirect) {
+        btnDirect.style.display = 'inline-flex';
+        if (btnText) btnText.textContent = 'Instalar Agora';
+      }
+    } else {
+      if (guideEl) {
+        guideEl.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.3rem;">💻</span>
+            <span>No Chrome ou Edge, clique no ícone de <strong>Instalar</strong> no canto direito da barra de endereços (ou abra o menu do navegador e selecione <em>Instalar PicDrop</em>).</span>
+          </div>
+        `;
+      }
+      if (btnDirect) btnDirect.style.display = 'none';
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+  }
+
+  function closeInstallModal() {
+    const modal = document.getElementById('modal-pwa-install');
+    if (modal) {
+      modal.classList.remove('active');
+      modal.style.display = 'none';
+    }
+  }
+
+  function triggerInstallPrompt() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('[PicDrop PWA] Usuário aceitou a instalação');
+        }
+        deferredPrompt = null;
+        closeInstallModal();
+      });
+    } else {
+      closeInstallModal();
+      if (window.NotificationCenter) {
+        NotificationCenter.info('Abra o menu do navegador e selecione "Instalar PicDrop" ou "Adicionar à Tela Inicial".', 'Como Instalar');
+      }
+    }
+  }
+
+  function switchMobilePane(paneId) {
+    // 1. Update active states on bottom nav
+    document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-pane') === paneId);
+    });
+
+    // 2. Update sidebar active item
+    document.querySelectorAll('.dash-nav-item').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-pane') === paneId);
+    });
+
+    // 3. Switch pane view
+    document.querySelectorAll('.dash-section-pane').forEach(pane => {
+      pane.classList.remove('active');
+    });
+
+    const targetPane = document.getElementById(`pane-${paneId}`);
+    if (targetPane) {
+      targetPane.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    if (paneId === 'plans' && window.PlansModule) {
+      PlansModule.renderBillingCentral();
+    } else if (paneId === 'galleries' && window.GalleriesModule) {
+      GalleriesModule.render();
+    }
+  }
+
+  return {
+    init,
+    promptInstall,
+    closeInstallModal,
+    triggerInstallPrompt,
+    switchMobilePane
+  };
+})();
+
+if (typeof window !== 'undefined') {
+  window.AppPwaModule = AppPwaModule;
+}
+

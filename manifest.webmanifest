@@ -1,0 +1,52 @@
+{
+  "id": "picdrop-saas-app",
+  "name": "PicDrop — Galerias de Entrega & Estúdio Fotográfico",
+  "short_name": "PicDrop",
+  "description": "Plataforma SaaS de alta performance para fotógrafos e estúdios: entrega com PIN, exportação Lightroom Classic e checkout seguro.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["photography", "business", "productivity"],
+  "icons": [
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Minhas Galerias",
+      "short_name": "Galerias",
+      "description": "Acessar galerias de clientes ativas",
+      "url": "/#galerias",
+      "icons": [{ "src": "assets/icons/icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Faturamento & Assinatura",
+      "short_name": "Faturamento",
+      "description": "Gerenciar faturas, cartão e planos",
+      "url": "/#faturamento",
+      "icons": [{ "src": "assets/icons/icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Domínio Próprio",
+      "short_name": "Domínio",
+      "description": "Configurar DNS e domínio personalizado",
+      "url": "/#dominio",
+      "icons": [{ "src": "assets/icons/icon.svg", "sizes": "any" }]
+    }
+  ]
+}

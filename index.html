@@ -2,27 +2,27 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>PicDrop — Plataforma Editorial para Fotógrafos Exigentes</title>
   <meta name="description" content="Infraestrutura digital de alto padrão para fotógrafos de casamento, moda, retrato e fine art. Galerias com entrega em alta definição e portfólio autoral." />
   
+  <!-- PWA & Multiplatform Mobile App Meta Tags -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#090d16" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PicDrop" />
+  <link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg" />
+  <link rel="apple-touch-icon" href="assets/icons/icon.svg" />
+
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/dashboard.css" />
   <link rel="stylesheet" href="css/responsive.css" />
   
-  <!-- App Isolation & Decoupling Script -->
+  <!-- Stale Cache Cleanup Script -->
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(regs) {
-        for (var r of regs) r.unregister();
-      });
-    }
-    if ('caches' in window) {
-      caches.keys().then(function(keys) {
-        for (var k of keys) caches.delete(k);
-      });
-    }
     try {
       for (var i = localStorage.length - 1; i >= 0; i--) {
         var key = localStorage.key(i);
@@ -58,6 +58,10 @@
         </nav>
 
         <div class="header-actions">
+          <button type="button" class="btn-cta-secondary btn-install-pwa" onclick="AppPwaModule.promptInstall()" title="Instalar aplicativo no Android, iPhone, Windows ou Mac" style="font-size:0.82rem; padding:7px 12px; display:inline-flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span>Instalar App</span>
+          </button>
           <a href="showcase.html" class="btn-cta-secondary" style="font-size:0.82rem; padding:7px 14px;">
             Showcase Executivo
           </a>
@@ -606,6 +610,11 @@
       </div>
 
       <div class="dash-user-controls">
+        <button type="button" class="btn-back-site btn-install-pwa" onclick="AppPwaModule.promptInstall()" title="Instalar aplicativo no Android, iPhone, Windows ou Mac" style="font-size:0.78rem;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span>Instalar App</span>
+        </button>
+
         <a href="showcase.html" target="_blank" class="btn-back-site" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:rgba(37,99,235,0.08); color:#93c5fd; border:1px solid rgba(37,99,235,0.22); font-size:0.78rem;" title="Acessar ambiente administrativo de governança">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
           <span>Painel Master</span>
@@ -1141,8 +1150,33 @@
             </div>
           </div>
         </section>
-      </main>
-    </div>
+    <!-- MOBILE BOTTOM NAVIGATION BAR -->
+    <nav class="dash-mobile-bottom-nav" id="dash-mobile-bottom-nav">
+      <button type="button" class="mobile-nav-btn active" data-pane="galleries" onclick="AppPwaModule.switchMobilePane('galleries')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+        <span>Galerias</span>
+      </button>
+
+      <button type="button" class="mobile-nav-btn" data-pane="domains" onclick="AppPwaModule.switchMobilePane('domains')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>Domínio</span>
+      </button>
+
+      <button type="button" class="mobile-nav-btn" data-pane="plans" onclick="AppPwaModule.switchMobilePane('plans')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span>Assinatura</span>
+      </button>
+
+      <button type="button" class="mobile-nav-btn" data-pane="security" onclick="AppPwaModule.switchMobilePane('security')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Segurança</span>
+      </button>
+
+      <button type="button" class="mobile-nav-btn" onclick="AppPwaModule.promptInstall()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        <span>App</span>
+      </button>
+    </nav>
   </div>
 
   <!-- AUTH MODAL -->
@@ -2072,6 +2106,44 @@
         <button type="button" class="btn-cta-primary" onclick="PlansModule.printReceipt()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           <span>Imprimir / Salvar em PDF</span>
+        </button>
+      </div>
+  <!-- ==========================================================================
+       PWA MULTIPLATFORM INSTALL MODAL (#modal-pwa-install)
+       Custom Install Guidance for iOS Safari, Android, Windows & Mac
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-pwa-install" style="display:none; z-index:10002;">
+    <div class="modal-container" style="max-width:480px; text-align:center;">
+      <button class="modal-close-btn" onclick="AppPwaModule.closeInstallModal()">&times;</button>
+      
+      <div style="width:68px; height:68px; margin:0 auto 16px auto; border-radius:18px; background:linear-gradient(135deg, #1e293b, #090d16); border:1px solid rgba(59,130,246,0.3); display:flex; align-items:center; justify-content:center; box-shadow:0 10px 25px rgba(0,0,0,0.6);">
+        <img src="assets/icons/icon.svg" alt="PicDrop App" style="width:48px; height:48px;" />
+      </div>
+
+      <h2 style="font-size:1.35rem; font-weight:800; color:#fff; margin-bottom:8px;">Instalar o PicDrop</h2>
+      <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.5; margin-bottom:20px;">
+        Use o PicDrop como um aplicativo nativo no seu <strong>iPhone, Android, Windows ou Mac</strong>, com tela cheia, sem barras do navegador e carregamento ultrarrápido offline.
+      </p>
+
+      <!-- Step-by-step for detected platform -->
+      <div id="pwa-install-platform-guide" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:8px; padding:16px; text-align:left; margin-bottom:20px; font-size:0.82rem; color:var(--text-light); line-height:1.6;">
+        <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:10px;">
+          <span style="background:rgba(37,99,235,0.2); color:#60a5fa; font-weight:700; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">1</span>
+          <span>No <strong>iPhone / iPad (Safari)</strong>: Toque no botão de <strong>Compartilhar</strong> (ícone do quadrado com a seta ⎋) na barra do navegador.</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:10px;">
+          <span style="background:rgba(37,99,235,0.2); color:#60a5fa; font-weight:700; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">2</span>
+          <span>Role para baixo e selecione <strong>"Adicionar à Tela de Início"</strong> ➕.</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button type="button" class="btn-cta-secondary" onclick="AppPwaModule.closeInstallModal()" style="padding:10px 18px;">
+          Agora Não
+        </button>
+        <button type="button" class="btn-cta-primary" id="btn-pwa-direct-install" onclick="AppPwaModule.triggerInstallPrompt()" style="padding:10px 22px; display:inline-flex; align-items:center; gap:8px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="btn-pwa-install-text">Instalar Aplicativo</span>
         </button>
       </div>
     </div>
