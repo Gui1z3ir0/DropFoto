@@ -16,16 +16,15 @@
   <link rel="stylesheet" href="css/dashboard.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 
-  <!-- App Isolation & Decoupling Script: Purge stale cache/service-workers from mercadinho -->
   <script>
+    // App Isolation: Only purge legacy foreign service workers
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(regs) {
-        for (var r of regs) r.unregister();
-      });
-    }
-    if ('caches' in window) {
-      caches.keys().then(function(keys) {
-        for (var k of keys) caches.delete(k);
+        for (var r of regs) {
+          if (r.active && r.active.scriptURL && r.active.scriptURL.includes('mercadinho')) {
+            r.unregister();
+          }
+        }
       });
     }
     try {
