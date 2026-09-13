@@ -1,0 +1,180 @@
+/* ==========================================================================
+   PICDROP - RESPONSIVE STYLES
+   Mobile, Tablet, and Desktop Breakpoints
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .hero-title {
+    font-size: 2.8rem;
+  }
+  
+  .steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .platform-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pricing-cards-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .dash-sidebar {
+    width: 210px;
+  }
+
+  .galleries-stats-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    height: 64px;
+  }
+
+  .header-container {
+    height: 64px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .hero-section {
+    padding-top: 100px;
+    padding-bottom: 60px;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-mockup-image {
+    height: 380px;
+  }
+
+  .split-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px;
+  }
+
+  .split-media-card img {
+    height: 300px;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .why-us-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 30px;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .carousel-display-card img {
+    height: 280px;
+  }
+
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .dash-layout {
+    flex-direction: column;
+  }
+
+  .dash-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 12px;
+  }
+
+  .dash-nav-item {
+    white-space: nowrap;
+    padding: 8px 12px;
+  }
+
+  .dash-main {
+    padding: 24px 16px;
+  }
+
+  .domain-results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-subscription-pill {
+    padding: 3px 8px;
+    gap: 6px;
+  }
+
+  .dash-subscription-pill .btn-manage-sub span {
+    display: none;
+  }
+
+  .billing-status-card {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-summary-column {
+    border-right: none;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .checkout-fields-grid,
+  .card-form-grid,
+  .card-form-row-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .pix-payment-box {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .pix-qr-wrap {
+    margin: 0 auto;
+  }
+
+  .receipt-totals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .receipt-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .receipt-meta-block {
+    text-align: left;
+  }
+}
+

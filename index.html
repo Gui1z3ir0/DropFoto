@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PicDrop — Plataforma Editorial para Fotógrafos Exigentes</title>
+  <meta name="description" content="Infraestrutura digital de alto padrão para fotógrafos de casamento, moda, retrato e fine art. Galerias com entrega em alta definição e portfólio autoral." />
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  
+  <!-- App Isolation & Decoupling Script -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        for (var r of regs) r.unregister();
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(keys) {
+        for (var k of keys) caches.delete(k);
+      });
+    }
+    try {
+      for (var i = localStorage.length - 1; i >= 0; i--) {
+        var key = localStorage.key(i);
+        if (key && !key.startsWith('picdrop_')) {
+          localStorage.removeItem(key);
+        }
+      }
+    } catch(e) {}
+  </script>
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. LANDING PAGE VIEW
+       ======================================================================== -->
+  <div id="landing-view">
+
+    <!-- Top Navigation -->
+    <header class="site-header">
+      <div class="header-container">
+        <a href="#" class="brand-logo" id="header-brand-logo">
+          <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+          <span>picdrop</span>
+        </a>
+
+        <nav>
+          <ul class="nav-links">
+            <li><a href="#portfolio" class="nav-link">Portfólio</a></li>
+            <li><a href="#galerias" class="nav-link">Galerias</a></li>
+            <li><a href="#planos" class="nav-link">Planos & Assinaturas</a></li>
+            <li><a href="#faq" class="nav-link">Suporte & FAQ</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <a href="showcase.html" class="btn-cta-secondary" style="font-size:0.82rem; padding:7px 14px;">
+            Showcase Executivo
+          </a>
+          <button class="btn-cta-primary" id="btn-nav-go-dash" style="font-size:0.82rem; padding:8px 16px; display:inline-flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+            <span>Minhas Galerias</span>
+          </button>
+          <button class="btn-login-nav btn-trigger-login" id="btn-nav-login">
+            <span>Acessar Conta</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO SECTION -->
+      <section class="hero-section">
+        <div class="container">
+          <div class="hero-grid">
+            <div class="hero-content">
+              <h1 class="hero-title">
+                GALERIAS DE CLIENTES PARA FOTÓGRAFOS EXIGENTES
+              </h1>
+
+              <p class="hero-subtitle">
+                Apresente seus ensaios e produções com sofisticação editorial. Entrega de imagens sem perda de resolução, seleção instantânea e privacidade rigorosa.
+              </p>
+              <div class="hero-actions">
+                <button class="btn-cta-primary btn-trigger-register" data-plan="free">
+                  <span>Criar Conta Gratuita</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+                <a href="showcase.html" class="btn-cta-secondary">
+                  <span>Explorar Recursos</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="hero-mockup-wrapper">
+              <div class="hero-mockup-card">
+                <img src="assets/images/editorial_cover.jpg" alt="Portfólio Editorial Fine Art" class="hero-mockup-image" />
+                <div class="hero-photographer-badge">
+                  <span class="badge-name">MARIA CLARK</span>
+                  <span class="badge-tagline">ATELIER • GALERIA EDITORIAL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PORTFÓLIO ELEGANTE -->
+      <section class="section-split-showcase" id="portfolio">
+        <div class="container">
+          <div class="split-grid">
+            <div>
+              <h2 class="split-title">PORTFÓLIO ELEGANTE</h2>
+              <p class="split-text">
+                Construído para fotógrafos que exigem autoridade imediata. Vitrines personalizadas sem necessidade de linhas de código ou configurações técnicas complexas.
+              </p>
+              <button class="btn-cta-primary btn-trigger-register" data-plan="free">
+                <span>Começar Agora</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+
+              <ul class="feature-checklist">
+                <li class="feature-check-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Arquitetura visual limpa e focada no impacto da fotografia</span>
+                </li>
+                <li class="feature-check-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Calibração precisa de cores em telas de alta densidade (Retina/OLED)</span>
+                </li>
+                <li class="feature-check-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Publicação imediata em domínio próprio (.com.br / .com)</span>
+                </li>
+                <li class="feature-check-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Controle total sobre quais ensaios compõem a vitrine pública</span>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="split-media-card">
+                <img src="assets/images/portfolio_camera.jpg" alt="Fotógrafo com equipamento profissional" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GALERIAS DE CLIENTES -->
+      <section class="section-split-showcase" id="galerias" style="padding: 72px 0 40px 0;">
+        <div class="container">
+          <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px; flex-wrap:wrap; gap:16px;">
+            <div>
+              <h2 class="split-title" style="margin-bottom:6px;">GALERIAS INTERATIVAS DE ENTREGA</h2>
+
+              <p class="split-text" style="max-width:680px; margin-bottom:0;">
+                Seus clientes selecionam com 1 clique, aprovam fotos para o álbum e baixam com proteção por PIN criptografado. Clique em qualquer ensaio abaixo para testar a vitrine real:
+              </p>
+            </div>
+            <div style="display:flex; gap:12px;">
+              <button type="button" class="btn-cta-primary" onclick="document.getElementById('btn-nav-go-dash')?.click();" style="padding:10px 20px;">
+                <span>Gerenciar Minhas Galerias</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE LIVE GALLERIES SHOWCASE -->
+          <div class="galleries-grid-display" id="landing-galleries-grid">
+            <!-- Rendered dynamically by GalleriesModule -->
+          </div>
+        </div>
+      </section>
+
+
+      <!-- PICDROP. MUITO MAIS QUE UMA PLATAFORMA -->
+      <section class="section-platform-grid">
+        <div class="container">
+          <div style="text-align:center; margin-bottom:50px;">
+            <h2 style="font-family:var(--font-display); font-size:2.2rem; font-weight:800; text-transform:uppercase; letter-spacing:-0.03em; color:#fff;">
+              PICDROP. MUITO MAIS QUE UMA PLATAFORMA
+            </h2>
+            <p style="font-size:1.05rem; color:var(--text-muted); margin-top:8px;">
+              Projetado sob medida para as demandas reais de estúdios e fotógrafos independentes
+            </p>
+          </div>
+
+          <div class="platform-cards-grid">
+            <!-- 1 -->
+            <div class="platform-feature-card">
+              <svg class="feature-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <h3 class="feature-card-title">SELEÇÃO SIMPLES E RÁPIDA</h3>
+              <p class="feature-card-desc">
+                Permita que o cliente favorite e aprove as fotos do ensaio com apenas um clique, sem planilhas ou trocas intermináveis de mensagens.
+              </p>
+            </div>
+
+            <!-- 2 -->
+            <div class="platform-feature-card">
+              <svg class="feature-icon-svg" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <h3 class="feature-card-title">DOWNLOAD EM ALTA DEFINIÇÃO</h3>
+              <p class="feature-card-desc">
+                Entrega final com arquivos originais de alta fidelidade, garantindo a nitidez exata capturada pelo sensor da sua câmera.
+              </p>
+            </div>
+
+            <!-- 3 -->
+            <div class="platform-feature-card">
+              <svg class="feature-icon-svg" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <h3 class="feature-card-title">ACESSO PRIVADO POR SENHA</h3>
+              <p class="feature-card-desc">
+                Galerias criptografadas e protegidas individualmente por PIN, assegurando privacidade jurídica e sigilo contratual.
+              </p>
+            </div>
+
+            <!-- 4 -->
+            <div class="platform-feature-card">
+              <svg class="feature-icon-svg" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <h3 class="feature-card-title">PERFIL PROFISSIONAL EXCLUSIVO</h3>
+              <p class="feature-card-desc">
+                Sua marca em destaque com logotipo, biografia, links contratuais e botões de contato integrados à experiência de entrega.
+              </p>
+            </div>
+
+            <!-- 5 -->
+            <div class="platform-feature-card">
+              <svg class="feature-icon-svg" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              <h3 class="feature-card-title">EXPERIÊNCIA 100% RESPONSIVA</h3>
+              <p class="feature-card-desc">
+                Fluidez absoluta no iPhone, Android, iPad e computadores desktop. Os noivos e clientes navegam sem engasgos ou travamentos.
+              </p>
+            </div>
+
+            <!-- 6 -->
+            <div class="platform-feature-card">
+              <svg class="feature-icon-svg" viewBox="0 0 24 24" fill="none"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              <h3 class="feature-card-title">ENTREGA ÁGIL E SEM LIMITES</h3>
+              <p class="feature-card-desc">
+                Publique ensaios inteiros em minutos e compartilhe um link elegante, eliminando a dependência de pendrives ou links frios de nuvem.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- POR QUE NÓS -->
+      <section class="section-why-us">
+        <div class="container">
+          <div class="why-us-card">
+            <div>
+              <div class="why-us-badge">POSICIONAMENTO DE MERCADO</div>
+              <h2 class="why-us-heading">MAIOR VALOR PERCEBIDO PELO CLIENTE</h2>
+              <p class="why-us-text">
+                Substitua links genéricos e despersonalizados por uma galeria editorial que valida o valor do seu trabalho e justifica orçamentos mais elevados.
+              </p>
+            </div>
+            <div class="why-us-arrow-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUEM ESTÁ CONOSCO? -->
+      <section class="section-testimonials">
+        <div class="container">
+          <div style="text-align:center; margin-bottom:48px;">
+            <h2 style="font-family:var(--font-display); font-size:2.1rem; font-weight:800; text-transform:uppercase; letter-spacing:-0.03em; color:#fff;">
+              QUEM ESTÁ CONOSCO?
+            </h2>
+          </div>
+
+          <div class="testimonials-grid">
+            <div class="photographer-card">
+              <div class="photographer-avatar-wrap">
+                <img src="assets/images/matheus_dahsan.jpg" alt="Fotógrafo Matheus Dahsan" />
+              </div>
+              <h3 class="photographer-name">MATHEUS DAHSAN</h3>
+              <p class="photographer-quote">
+                "A PicDrop profissionalizou a entrega dos meus trabalhos. A aprovação de fotos pelos noivos se tornou 10 vezes mais rápida e sem ruídos contratuais."
+              </p>
+            </div>
+
+            <div class="photographer-card">
+              <div class="photographer-avatar-wrap">
+                <img src="assets/images/roberto_melo.jpg" alt="Fotógrafo Roberto Melo" />
+              </div>
+              <h3 class="photographer-name">ROBERTO MELO</h3>
+              <p class="photographer-quote">
+                "O design minimalista valoriza cada detalhe das minhas fotografias autorais. A percepção de valor dos meus clientes subiu imediatamente."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CAROUSEL: GALERIAS PARA TODO FOTÓGRAFO -->
+      <section class="section-carousel-categories">
+        <div class="container">
+          <div style="text-align:center;">
+            <h2 style="font-family:var(--font-display); font-size:2.1rem; font-weight:800; text-transform:uppercase; letter-spacing:-0.03em; color:#fff;">
+              GALERIAS DE CLIENTES PARA TODO FOTÓGRAFO
+            </h2>
+          </div>
+
+          <div class="carousel-container">
+            <div class="carousel-display-card">
+              <img id="carousel-slide-img" src="assets/images/family_sunset.jpg" alt="Família & Gestantes" />
+              <div class="carousel-caption-overlay">
+                <div class="carousel-category-title" id="carousel-slide-title">FAMÍLIA & GESTANTES</div>
+              </div>
+            </div>
+
+            <div class="carousel-controls">
+              <button class="carousel-arrow-btn" id="carousel-btn-prev" aria-label="Anterior">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <span class="carousel-counter" id="carousel-counter-text">1/7</span>
+              <button class="carousel-arrow-btn" id="carousel-btn-next" aria-label="Próximo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLANOS & PREÇOS -->
+      <section class="section-pricing" id="planos">
+        <div class="container">
+          <div style="text-align:center; margin-bottom:40px;">
+            <h2 style="font-family:var(--font-display); font-size:2.2rem; font-weight:800; letter-spacing:-0.03em; text-transform:uppercase; color:#fff;">
+              PLANOS & ASSINATURAS
+            </h2>
+            <p style="font-size:1rem; color:var(--text-muted); margin-top:8px;">
+              Desconto de 35% na liquidação anual. Opções flexíveis para fotógrafos e estúdios consolidados.
+            </p>
+          </div>
+
+          <div class="pricing-billing-switch-wrapper">
+            <div class="billing-toggle-container">
+              <button class="billing-toggle-btn active" id="btn-billing-monthly">Mensalidade Regular</button>
+              <button class="billing-toggle-btn" id="btn-billing-yearly">Anual (-35%)</button>
+            </div>
+          </div>
+
+          <div class="pricing-cards-grid">
+            <!-- FREE -->
+            <div class="pricing-card">
+              <div class="pricing-plan-title">GALERIAS GRATUITAS</div>
+              <div class="pricing-plan-price-row">
+                <div class="price-amount">R$ 0</div>
+              </div>
+
+              <ul class="pricing-features-list">
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Até 5 galerias ativas</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>5 GB de armazenamento em nuvem</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Entrega de fotos e vídeos</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Seleção de favoritos pelos clientes</span>
+                </li>
+              </ul>
+
+              <button class="btn-pricing-action btn-trigger-register" data-plan="free">
+                Ativar Conta Gratuita
+              </button>
+            </div>
+
+            <!-- PRO -->
+            <div class="pricing-card featured">
+              <div class="pricing-pill-badge">MAIS POPULAR</div>
+              <div class="pricing-plan-title">GALERIAS PRO</div>
+              <div class="pricing-plan-price-row">
+                <span class="price-currency">R$</span>
+                <span class="price-amount" id="price-val-pro">54,90</span>
+                <span class="price-period" id="period-val-pro">/ mês</span>
+              </div>
+
+              <ul class="pricing-features-list">
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>100 GB de armazenamento de alta velocidade</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Galerias de clientes ilimitadas</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Exportação para Lightroom & PIN seguro</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Venda de fotos adicionais integrada</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Indexação e reconhecimento facial</span>
+                </li>
+              </ul>
+
+              <button class="btn-pricing-action" data-plan="pro" onclick="PlansModule.openCheckoutModal('pro')">
+                Assinar Plano Pro
+              </button>
+            </div>
+
+            <!-- STUDIO -->
+            <div class="pricing-card">
+              <div class="pricing-pill-badge">O MELHOR PLANO</div>
+              <div class="pricing-plan-title">SITE + GALERIAS STUDIO</div>
+              <div class="pricing-plan-price-row">
+                <span class="price-currency">R$</span>
+                <span class="price-amount" id="price-val-studio">89,90</span>
+                <span class="price-period" id="period-val-studio">/ mês</span>
+              </div>
+
+              <ul class="pricing-features-list">
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>500 GB de capacidade dedicada</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Domínio próprio incluso (seusite.com.br)</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Otimização de SEO Google e ferramentas IA</span>
+                </li>
+                <li class="pricing-feature-item">
+                  <svg class="check-icon-svg" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Blog pessoal e portfólio editorial completo</span>
+                </li>
+              </ul>
+
+              <button class="btn-pricing-action" data-plan="studio" onclick="PlansModule.openCheckoutModal('studio')">
+                Assinar Plano Studio
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PERGUNTAS FREQUENTES (FAQ) -->
+      <section class="section-faq" id="faq">
+        <div class="container">
+          <div style="text-align:center;">
+            <h2 style="font-family:var(--font-display); font-size:2.1rem; font-weight:800; text-transform:uppercase; letter-spacing:-0.03em; color:#fff;">
+              PERGUNTAS FREQUENTES
+            </h2>
+          </div>
+
+          <div class="faq-accordion-list">
+            <div class="faq-item">
+              <button class="faq-question-btn">
+                <span>Por que um fotógrafo precisa ter um site próprio?</span>
+                <span class="faq-toggle-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Um endereço autônomo estabelece autoridade profissional inquestionável. Ao contrário das redes sociais onde os algoritmos controlam a distribuição e comprimem as imagens, no PicDrop seu trabalho é apreciado com fidelidade cromática e exclusividade contratual.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question-btn">
+                <span>Por que as galerias do PicDrop superam serviços genéricos de nuvem?</span>
+                <span class="faq-toggle-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Pastas genéricas de nuvem oferecem uma experiência fria de arquivos. O PicDrop entrega uma experiência sensorial de vitrine com curadoria, integração direta com Adobe Lightroom, proteção por PIN e download seletivo em alta resolução.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question-btn">
+                <span>Consigo criar e publicar meu site sem saber programação?</span>
+                <span class="faq-toggle-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Sim, integralmente. O PicDrop foi arquitetado para ser configurado de forma visual em poucos minutos. Você organiza suas galerias, seleciona os parâmetros de entrega e publica sem tocar em código.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question-btn">
+                <span>Sou fotógrafo iniciante, qual plano é indicado?</span>
+                <span class="faq-toggle-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Recomendamos iniciar pela modalidade Gratuita para entregar seus primeiros trabalhos. Conforme seu volume de contratos se expandir, a transição para os planos Pro ou Studio ocorre de maneira instantânea.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question-btn">
+                <span>Como funciona o suporte técnico em caso de dúvidas?</span>
+                <span class="faq-toggle-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Oferecemos atendimento prioritário por e-mail e canais dedicados para garantir que nenhuma entrega de trabalho aos seus clientes sofra interrupções.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPERIMENTE O PICDROP HOJE -->
+      <section style="padding:100px 0; border-top:1px solid var(--border-subtle); text-align:center;">
+        <div class="container">
+          <div style="max-width:700px; margin:0 auto;">
+            <h2 style="font-family:var(--font-display); font-size:2.8rem; font-weight:800; letter-spacing:-0.04em; text-transform:uppercase; color:#fff; margin-bottom:16px;">
+              EXPERIMENTE O PICDROP HOJE
+            </h2>
+            <p style="font-size:1.1rem; color:var(--text-muted); line-height:1.6; margin-bottom:32px;">
+              Eleve o padrão de apresentação dos seus ensaios, encante seus clientes e maximize o faturamento do seu estúdio.
+            </p>
+            <button class="btn-cta-primary btn-trigger-register" data-plan="free" style="padding:15px 32px; font-size:0.95rem;">
+              <span>Criar Portfólio Gratuito</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-top-grid">
+          <div>
+            <div class="brand-logo" style="margin-bottom:14px;">
+              <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+              <span>picdrop</span>
+            </div>
+            <p style="color:var(--text-muted); font-size:0.9rem; max-width:360px; line-height:1.6;">
+              Criador de sites e galerias de clientes para fotógrafos que operam no mais alto padrão de exigência.
+            </p>
+          </div>
+
+          <div>
+            <div class="footer-column-title">PLATAFORMA</div>
+            <ul class="footer-link-list">
+              <li><a href="#portfolio">Criador de Portfólios</a></li>
+              <li><a href="#galerias">Galerias Privadas</a></li>
+              <li><a href="#planos">Tabela de Preços</a></li>
+              <li><a href="showcase.html">Console Técnico</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-column-title">SUPORTE</div>
+            <ul class="footer-link-list">
+              <li style="color:var(--text-pure); font-size:0.85rem; font-family:var(--font-mono);">suporte.picdrop@gmail.com</li>
+              <li><a href="#" class="btn-trigger-login">Acesso ao Painel</a></li>
+              <li><a href="#faq">Central de Ajuda</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+          <div>© 2026 PicDrop Inc. Todos os direitos reservados.</div>
+          <div style="font-family:var(--font-mono); font-size:0.75rem;">PADRÃO SOBERANO DE FOTOGRAFIA DIGITAL</div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ========================================================================
+       2. DASHBOARD VIEW (ÁREA DO FOTÓGRAFO)
+       ======================================================================== -->
+  <div id="dashboard-view">
+    <header class="dash-topbar">
+      <div class="dash-brand-wrap">
+        <a href="#" class="brand-logo" style="font-size:1.3rem;">
+          <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+          <span>picdrop</span>
+        </a>
+        
+        <!-- Commercial Active Subscription Status Badge -->
+        <div class="dash-subscription-pill" id="dash-subscription-pill">
+          <span class="sub-status-dot"></span>
+          <span class="sub-status-text" id="topbar-plan-label">Assinatura Studio Ativa</span>
+          <button type="button" class="btn-manage-sub" onclick="PlansModule.openBillingPortal()" title="Gerenciar faturas, cartão e plano">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span>Faturamento &amp; Assinatura</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="dash-user-controls">
+        <a href="showcase.html" target="_blank" class="btn-back-site" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:rgba(37,99,235,0.08); color:#93c5fd; border:1px solid rgba(37,99,235,0.22); font-size:0.78rem;" title="Acessar ambiente administrativo de governança">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          <span>Painel Master</span>
+        </a>
+
+        <button class="btn-back-site" id="btn-back-landing">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <span>Retornar à Vitrine</span>
+        </button>
+
+        <div class="dash-user-profile">
+          <img src="assets/images/maria_clark.jpg" alt="Avatar" class="user-avatar-sm" id="dash-user-avatar" />
+          <div class="user-info-text">
+            <span class="user-name-title" id="dash-user-name">Maria Clark</span>
+            <span class="user-badge-plan" id="user-plan-badge">Plano Studio</span>
+          </div>
+        </div>
+
+        <button class="btn-logout" id="btn-dash-logout">Encerrar Sessão</button>
+      </div>
+    </header>
+
+    <div class="dash-layout">
+      <aside class="dash-sidebar">
+        <button class="dash-nav-item active" data-pane="galleries">
+          <svg class="dash-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+          <span>Minhas Galerias</span>
+        </button>
+
+        <button class="dash-nav-item" data-pane="domains">
+          <svg class="dash-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Domínio Próprio</span>
+        </button>
+
+        <button class="dash-nav-item" data-pane="referral">
+          <svg class="dash-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          <span>Indicações & Desconto</span>
+        </button>
+
+        <button class="dash-nav-item" data-pane="security">
+          <svg class="dash-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Segurança & 2FA</span>
+        </button>
+
+        <button class="dash-nav-item" data-pane="plans">
+          <svg class="dash-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <span>Planos & Cotas</span>
+        </button>
+
+        <div class="sidebar-quota-box">
+          <div class="quota-header">
+            <span>ARMAZENAMENTO</span>
+            <span id="quota-sidebar-pct">28%</span>
+          </div>
+          <div class="quota-progress-bar">
+            <div class="quota-fill" id="sidebar-quota-fill" style="width: 28%;"></div>
+          </div>
+          <div class="quota-subtext" id="sidebar-quota-text">142 GB de 500 GB</div>
+        </div>
+      </aside>
+
+      <main class="dash-main">
+        <!-- PANE 1: GALERIAS -->
+        <section class="dash-section-pane active" id="pane-galleries">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Galerias de Entrega</h1>
+              <p class="pane-description">Gerencie a distribuição de arquivos de clientes com proteção por PIN e exportação Lightroom.</p>
+            </div>
+            <button class="btn-cta-primary" id="btn-new-gallery">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Nova Galeria</span>
+            </button>
+          </div>
+
+          <div class="galleries-stats-row">
+            <div class="stat-card">
+              <div class="stat-title">Galerias Registradas</div>
+              <div class="stat-val" id="stat-galleries-count">5</div>
+              <div class="stat-limit-text" id="quota-galleries-max">Ilimitadas no Studio</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-title">Arquivos Entregues</div>
+              <div class="stat-val">675</div>
+              <div class="stat-limit-text">Alta resolução garantida</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-title">Acessos Únicos de Clientes</div>
+              <div class="stat-val">7.442</div>
+              <div class="stat-limit-text">Navegação criptografada TLS</div>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE GALLERIES TOOLBAR -->
+          <div class="galleries-toolbar">
+            <div class="galleries-search-box">
+              <svg class="galleries-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="gal-search-input" class="galleries-search-input" placeholder="Buscar por cliente, título ou data..." oninput="GalleriesModule.search(this.value)" />
+            </div>
+
+            <div class="galleries-category-pills">
+              <button type="button" class="gal-cat-pill active" data-cat="all" onclick="GalleriesModule.filterByCategory('all')">
+                <span>Todas</span>
+                <span class="cat-count-badge" id="cat-count-all">5</span>
+              </button>
+              <button type="button" class="gal-cat-pill" data-cat="casamento" onclick="GalleriesModule.filterByCategory('casamento')">
+                <span>Casamento</span>
+                <span class="cat-count-badge" id="cat-count-casamento">1</span>
+              </button>
+              <button type="button" class="gal-cat-pill" data-cat="familia" onclick="GalleriesModule.filterByCategory('familia')">
+                <span>Família &amp; Gestante</span>
+                <span class="cat-count-badge" id="cat-count-familia">2</span>
+              </button>
+              <button type="button" class="gal-cat-pill" data-cat="editorial" onclick="GalleriesModule.filterByCategory('editorial')">
+                <span>Editorial &amp; Moda</span>
+                <span class="cat-count-badge" id="cat-count-editorial">1</span>
+              </button>
+              <button type="button" class="gal-cat-pill" data-cat="arquitetura" onclick="GalleriesModule.filterByCategory('arquitetura')">
+                <span>Arquitetura</span>
+                <span class="cat-count-badge" id="cat-count-arquitetura">1</span>
+              </button>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:0.75rem; color:var(--text-dimmed);">Ordenar:</span>
+              <select class="galleries-sort-select" onchange="GalleriesModule.sort(this.value)">
+                <option value="recent">Mais Recentes</option>
+                <option value="photos">Mais Fotos</option>
+                <option value="selection">% Seleção Aprovada</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="galleries-grid-display" id="galleries-grid-display">
+            <!-- Rendered by galleries.js -->
+          </div>
+        </section>
+
+
+        <!-- PANE 2: DOMÍNIO -->
+        <section class="dash-section-pane" id="pane-domains">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Domínio Próprio do Fotógrafo</h1>
+              <p class="pane-description">Conecte um endereço autônomo ao seu portfólio PicDrop com certificado SSL Let's Encrypt.</p>
+            </div>
+          </div>
+
+          <div id="domain-plan-lock-notice" style="display:none; background:rgba(255,255,255,0.04); border:1px solid var(--border-medium); padding:20px; border-radius:var(--radius-sm); margin-bottom:24px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div>
+                <strong style="color:#ffffff;">Recurso Exclusivo do Plano Studio</strong>
+                <p style="font-size:0.88rem; color:var(--text-muted); margin-top:4px;">
+                  Faça o upgrade para o <strong>Plano Studio</strong> para registrar e conectar seu domínio autônomo com SSL incluso.
+                </p>
+              </div>
+              <button class="btn-cta-primary" onclick="PlansModule.setPlan('studio');" style="padding:8px 18px;">
+                Upgrade para Studio
+              </button>
+            </div>
+          </div>
+
+          <div id="domain-actions-container">
+            <div class="domain-active-status-card">
+              <div>
+                <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dimmed); margin-bottom:4px;">
+                  Domínio Primário Conectado
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span class="status-indicator-dot"></span>
+                  <a href="#" target="_blank" id="active-domain-link" style="font-family:var(--font-sans); font-size:1.35rem; font-weight:700; color:#fff;">
+                    https://mariaclarkfoto.com.br
+                  </a>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:18px; font-family:var(--font-mono); font-size:0.82rem;">
+                <div id="ssl-status-indicator">
+                  <span style="color:#10b981;">TLS 1.3 • CERTIFICADO SSL ATIVO</span>
+                </div>
+                <div id="dns-status-indicator">
+                  <span style="color:#10b981;">DNS PROPAGADO</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="domain-banner-box">
+              <h2 style="font-size:1.25rem; font-weight:700; margin-bottom:6px;">
+                Registrar Novo Domínio Autônomo
+              </h2>
+              <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">
+                Consulte a disponibilidade do seu estúdio ou nome artístico. O apontamento DNS e provisionamento SSL são automáticos.
+              </p>
+
+              <div class="domain-search-box">
+                <input type="text" id="domain-search-input" class="domain-search-input" placeholder="Informe a marca desejada..." value="mariaclark" />
+                <button class="btn-cta-primary" id="btn-search-domain" style="padding:9px 20px; font-size:0.85rem;">
+                  Consultar Registro
+                </button>
+              </div>
+
+              <div class="domain-results-grid" id="domain-results-grid"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANE 3: REFERRAL -->
+        <section class="dash-section-pane" id="pane-referral">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Programa de Indicação & Créditos</h1>
+              <p class="pane-description">Cada novo fotógrafo ativo converte R$ 20,00 de desconto deduzido na sua próxima mensalidade.</p>
+            </div>
+            <button class="btn-cta-secondary" id="btn-simulate-referral" style="font-size:0.82rem;">
+              Simular Novo Indicado
+            </button>
+          </div>
+
+          <div class="referral-hero-card">
+            <h2 style="font-size:1.15rem; font-weight:700; color:#fff; margin-bottom:4px;">
+              Link de Rastreamento de Afiliação
+            </h2>
+            <div class="referral-link-input-group">
+              <input type="text" id="referral-link-input" class="referral-link-text" value="https://picdrop.me/r/MARIACLARK20" readonly />
+              <button class="btn-cta-primary" id="btn-copy-referral" style="padding:8px 16px; font-size:0.82rem;">
+                Copiar Link
+              </button>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-top:20px;">
+              <div style="background:var(--bg-black); border:1px solid var(--border-subtle); padding:14px; border-radius:var(--radius-sm);">
+                <div style="font-size:0.68rem; color:var(--text-dimmed); font-weight:700; text-transform:uppercase;">Cliques no Link</div>
+                <div style="font-size:1.4rem; font-weight:700; color:#fff; font-family:var(--font-mono); margin-top:2px;" id="ref-clicks-count">48</div>
+              </div>
+              <div style="background:var(--bg-black); border:1px solid var(--border-subtle); padding:14px; border-radius:var(--radius-sm);">
+                <div style="font-size:0.68rem; color:var(--text-dimmed); font-weight:700; text-transform:uppercase;">Cadastros Registrados</div>
+                <div style="font-size:1.4rem; font-weight:700; color:#fff; font-family:var(--font-mono); margin-top:2px;" id="ref-registered-count">6</div>
+              </div>
+              <div style="background:var(--bg-black); border:1px solid var(--border-subtle); padding:14px; border-radius:var(--radius-sm);">
+                <div style="font-size:0.68rem; color:var(--text-dimmed); font-weight:700; text-transform:uppercase;">Assinaturas Ativas</div>
+                <div style="font-size:1.4rem; font-weight:700; color:#10b981; font-family:var(--font-mono); margin-top:2px;" id="ref-active-count">2</div>
+              </div>
+              <div style="background:var(--bg-black); border:1px solid var(--border-subtle); padding:14px; border-radius:var(--radius-sm);">
+                <div style="font-size:0.68rem; color:var(--text-dimmed); font-weight:700; text-transform:uppercase;">Crédito Acumulado</div>
+                <div style="font-size:1.4rem; font-weight:700; color:#fff; font-family:var(--font-mono); margin-top:2px;" id="ref-total-credit">R$ 40,00</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="next-invoice-card">
+            <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:16px;">
+              Extrato Conciliado da Próxima Cobrança
+            </h3>
+
+            <div class="invoice-item-row">
+              <span id="invoice-plan-name">Assinatura Mensal • Plano Studio</span>
+              <span id="invoice-base-price" style="font-family:var(--font-mono);">R$ 89,90</span>
+            </div>
+
+            <div class="invoice-item-row discount" id="invoice-discount-row">
+              <span style="color:#10b981;">Crédito Conquistado por Indicações Ativas</span>
+              <span id="invoice-discount-val" style="font-family:var(--font-mono); color:#10b981;">- R$ 40,00</span>
+            </div>
+
+            <div class="invoice-total-row">
+              <span>Valor Líquido da Fatura:</span>
+              <span id="invoice-total-val" style="color:#10b981; font-family:var(--font-mono); font-size:1.4rem;">R$ 49,90</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANE 4: SEGURANÇA -->
+        <section class="dash-section-pane" id="pane-security">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Segurança & Autenticação</h1>
+              <p class="pane-description">Controle de credenciais, duplo fator criptográfico e auditoria detalhada de acessos.</p>
+            </div>
+          </div>
+
+          <div class="security-toggle-card">
+            <div>
+              <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:4px;">
+                Autenticação de Dois Fatores (2FA)
+              </h2>
+              <p id="2fa-status-text" style="font-size:0.88rem; color:var(--text-muted);">
+                Exige código temporário de 6 dígitos gerado por aplicativo autenticador a cada tentativa de conexão.
+              </p>
+            </div>
+
+            <label class="switch">
+              <input type="checkbox" id="2fa-toggle-switch" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div id="2fa-setup-details" style="background:var(--bg-black); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:24px; margin-bottom:32px;">
+            <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+              <div style="background:#fff; padding:10px; border-radius:4px; line-height:0;">
+                <svg width="110" height="110" viewBox="0 0 110 110">
+                  <rect width="110" height="110" fill="#ffffff" />
+                  <rect x="6" y="6" width="30" height="30" fill="#09090b" />
+                  <rect x="10" y="10" width="22" height="22" fill="#ffffff" />
+                  <rect x="14" y="14" width="14" height="14" fill="#09090b" />
+                  <rect x="74" y="6" width="30" height="30" fill="#09090b" />
+                  <rect x="78" y="10" width="22" height="22" fill="#ffffff" />
+                  <rect x="82" y="14" width="14" height="14" fill="#09090b" />
+                  <rect x="6" y="74" width="30" height="30" fill="#09090b" />
+                  <rect x="10" y="78" width="22" height="22" fill="#ffffff" />
+                  <rect x="14" y="82" width="14" height="14" fill="#09090b" />
+                  <rect x="44" y="10" width="8" height="8" fill="#09090b" />
+                  <rect x="56" y="10" width="8" height="8" fill="#09090b" />
+                  <rect x="44" y="44" width="14" height="14" fill="#09090b" />
+                  <rect x="64" y="44" width="8" height="8" fill="#09090b" />
+                  <rect x="44" y="74" width="8" height="8" fill="#09090b" />
+                  <rect x="60" y="74" width="14" height="14" fill="#09090b" />
+                  <rect x="84" y="74" width="8" height="8" fill="#09090b" />
+                </svg>
+              </div>
+
+              <div>
+                <div style="font-size:0.75rem; color:var(--text-dimmed); font-weight:700; text-transform:uppercase; margin-bottom:4px;">
+                  Chave Base32 para Inserção Manual
+                </div>
+                <div class="secret-key-badge">
+                  JBSWY3DPEHPK3PXP
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">
+                  Compatível com Google Authenticator, 1Password e Authy.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="login-history-card">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+              <div>
+                <h3 style="font-size:1.1rem; font-weight:700;">Trilha de Auditoria de Sessões</h3>
+                <p style="font-size:0.84rem; color:var(--text-muted);">
+                  Registros de conexões com resolução de IP e status de autenticação.
+                </p>
+              </div>
+              <button class="btn-cta-secondary" id="btn-terminate-sessions" style="font-size:0.8rem; padding:7px 14px;">
+                Revogar Outras Sessões
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Plataforma & Navegador</th>
+                    <th>Endereço IP</th>
+                    <th>Geolocalização</th>
+                    <th>Método Utilizado</th>
+                    <th>Resultado</th>
+                  </tr>
+                </thead>
+                <tbody id="login-history-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANE 5: CENTRAL DE FATURAMENTO, PLANOS & ASSINATURA -->
+        <section class="dash-section-pane" id="pane-plans">
+          <div class="pane-header">
+            <div>
+              <h1 class="pane-title">Faturamento &amp; Assinatura</h1>
+              <p class="pane-description">Gestão da assinatura ativa, conciliação bancária de faturas, método de pagamento e emissão de notas fiscais.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn-cta-secondary" onclick="PlansModule.openCheckoutModal('studio')" style="font-size:0.82rem; padding:8px 16px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <span>Trocar Forma de Pagamento</span>
+              </button>
+              <button class="btn-cta-primary" onclick="PlansModule.openCheckoutModal('studio')" style="font-size:0.82rem; padding:8px 18px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                <span>Alterar / Renovar Plano</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- CARD 1: STATUS DA ASSINATURA ATIVA -->
+          <div class="billing-status-card">
+            <div class="billing-status-main">
+              <div class="billing-plan-pill-row">
+                <span class="badge-status-active">
+                  <span class="pulse-dot"></span> ASSINATURA ATIVA
+                </span>
+                <span class="badge-billing-cycle" id="billing-current-cycle-badge">CICLO ANUAL (35% DE DESCONTO)</span>
+              </div>
+              <h2 class="billing-current-plan-title" id="billing-current-plan-name">Site + Galerias Studio</h2>
+              <p class="billing-current-plan-desc" id="billing-current-plan-features">
+                500 GB de Armazenamento Dedicado • Galerias Ilimitadas • Domínio Próprio Incluso (mariaclark.com.br) • Exportação Lightroom Classic
+              </p>
+              
+              <div class="billing-meta-grid">
+                <div class="billing-meta-item">
+                  <span class="meta-label">Próxima Renovação:</span>
+                  <span class="meta-val" id="billing-next-date">13 de Outubro de 2026</span>
+                </div>
+                <div class="billing-meta-item">
+                  <span class="meta-label">Valor Recorrente:</span>
+                  <span class="meta-val highlight" id="billing-recurring-val">R$ 58,43 / mês (R$ 701,16/ano)</span>
+                </div>
+                <div class="billing-meta-item">
+                  <span class="meta-label">Emissão de Nota Fiscal:</span>
+                  <span class="meta-val">NFS-e Automática no CNPJ</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="billing-payment-card-box">
+              <div class="card-box-header">
+                <span class="card-box-title">MÉTODO DE COBRANÇA PRINCIPAL</span>
+                <span class="card-auto-badge">DÉBITO AUTOMÁTICO</span>
+              </div>
+              <div class="registered-card-display">
+                <div class="reg-card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                </div>
+                <div>
+                  <div class="reg-card-brand" id="billing-card-brand">Mastercard Black final 4821</div>
+                  <div class="reg-card-expiry" id="billing-card-expiry">Expira em 09/2029 • Titular: MARIA CLARK</div>
+                </div>
+              </div>
+              <div class="card-box-actions">
+                <button type="button" class="btn-card-action" onclick="PlansModule.openCheckoutModal('studio')">Atualizar Cartão</button>
+                <button type="button" class="btn-card-action" onclick="PlansModule.openCheckoutModal('studio')">Ver Opções de PIX</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 2: DADOS FISCAIS / NFS-e -->
+          <div class="billing-tax-bar">
+            <div class="tax-bar-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <div class="tax-bar-text">
+              <span class="tax-bar-title">Faturamento &amp; Dados Fiscais Registrados:</span>
+              <span class="tax-bar-details" id="billing-tax-details">Maria Clark Fotografia ME • CNPJ 48.921.340/0001-82 • E-mail de Envio: contato@mariaclark.com.br</span>
+            </div>
+            <button type="button" class="btn-edit-tax" onclick="PlansModule.openCheckoutModal('studio')">Editar Dados Fiscais</button>
+          </div>
+
+          <!-- CARD 3: HISTÓRICO DE FATURAS & RECIBOS PDF -->
+          <div class="billing-invoices-card">
+            <div class="invoices-card-header">
+              <div>
+                <h3 class="invoices-card-title">Histórico de Faturas &amp; Recibos Fiscais</h3>
+                <p class="invoices-card-desc">Faturas conciliadas com autenticação digital criptográfica e download imediato de recibos.</p>
+              </div>
+              <span class="invoices-count-tag" id="invoices-count-tag">3 faturas liquidadas</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="custom-table billing-invoices-table">
+                <thead>
+                  <tr>
+                    <th>Código da Fatura</th>
+                    <th>Data de Emissão</th>
+                    <th>Discriminação</th>
+                    <th>Forma</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Documento Fiscal</th>
+                  </tr>
+                </thead>
+                <tbody id="billing-invoices-tbody">
+                  <!-- Rendered dynamically by PlansModule.renderInvoicesTable() -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- CARD 4: CATÁLOGO DE PLANOS COM UPGRADE REAL -->
+          <div class="billing-plans-catalog-header">
+            <h3 style="font-size:1.15rem; font-weight:700; color:#fff;">Planos &amp; Níveis de Serviço PicDrop</h3>
+            <p style="font-size:0.84rem; color:var(--text-muted);">Escale seu armazenamento e recursos conforme o volume do seu estúdio.</p>
+          </div>
+
+          <div class="pricing-cards-grid">
+            <div class="pricing-card" id="catalog-card-free">
+              <div class="pricing-plan-title">Plano Free</div>
+              <div class="pricing-plan-price-row">
+                <div class="price-amount" style="font-size:2rem;">R$ 0</div>
+              </div>
+              <ul class="pricing-features-list">
+                <li class="pricing-feature-item"><span>• Até 5 galerias ativas</span></li>
+                <li class="pricing-feature-item"><span>• 5 GB de armazenamento</span></li>
+                <li class="pricing-feature-item" style="color:var(--text-dimmed);"><span>• Sem exportação Lightroom</span></li>
+                <li class="pricing-feature-item" style="color:var(--text-dimmed);"><span>• Sem domínio próprio</span></li>
+              </ul>
+              <button class="btn-pricing-action" id="btn-catalog-free" onclick="PlansModule.setPlan('free');">Plano Básico Grátis</button>
+            </div>
+
+            <div class="pricing-card featured" id="catalog-card-pro">
+              <div class="pricing-pill-badge">POPULAR</div>
+              <div class="pricing-plan-title">Galerias Pro</div>
+              <div class="pricing-plan-price-row">
+                <span class="price-currency">R$</span>
+                <span class="price-amount">54,90</span>
+                <span class="price-period">/ mês</span>
+              </div>
+              <ul class="pricing-features-list">
+                <li class="pricing-feature-item"><span>• Galerias Ilimitadas</span></li>
+                <li class="pricing-feature-item"><span>• 100 GB de armazenamento</span></li>
+                <li class="pricing-feature-item"><span>• Exportação Lightroom &amp; PIN</span></li>
+                <li class="pricing-feature-item"><span>• Venda de fotos integrada</span></li>
+              </ul>
+              <button class="btn-pricing-action" id="btn-catalog-pro" onclick="PlansModule.openCheckoutModal('pro');">Assinar Plano Pro</button>
+            </div>
+
+            <div class="pricing-card" id="catalog-card-studio">
+              <div class="pricing-pill-badge">COMPLETO</div>
+              <div class="pricing-plan-title">Plano Studio</div>
+              <div class="pricing-plan-price-row">
+                <span class="price-currency">R$</span>
+                <span class="price-amount">89,90</span>
+                <span class="price-period">/ mês</span>
+              </div>
+              <ul class="pricing-features-list">
+                <li class="pricing-feature-item"><span>• Galerias Ilimitadas</span></li>
+                <li class="pricing-feature-item"><span>• 500 GB de capacidade</span></li>
+                <li class="pricing-feature-item"><span>• Domínio próprio (.com.br) incluso</span></li>
+                <li class="pricing-feature-item"><span>• Inteligência Artificial e SEO</span></li>
+              </ul>
+              <button class="btn-pricing-action" id="btn-catalog-studio" onclick="PlansModule.openCheckoutModal('studio');">Plano Atual em Uso</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal-container">
+      <button class="modal-close-btn" onclick="AuthModule.closeAuthModal()">&times;</button>
+
+      <div id="auth-step-credentials">
+        <!-- Claude-Style Presentation Header -->
+        <div class="claude-auth-header">
+          <div class="claude-brand-glyph">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/>
+              <path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </div>
+          <h2 class="claude-auth-title" id="auth-main-title">Boas-vindas ao PicDrop</h2>
+          <p class="claude-auth-subtitle" id="auth-main-subtitle">
+            Acesse seu estúdio com Gmail ou credenciais profissionais para gerenciar clientes, cotas e entregas.
+          </p>
+        </div>
+
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tab-btn-login" onclick="AuthModule.switchAuthTab('login')">
+            Acessar Conta
+          </button>
+          <button class="auth-tab-btn" id="tab-btn-register" onclick="AuthModule.switchAuthTab('register')">
+            Cadastrar Novo Estúdio
+          </button>
+        </div>
+
+        <div id="form-login-pane">
+          <!-- Social Login Grid: Gmail & Facebook -->
+          <div class="social-buttons-grid">
+            <button type="button" class="btn-google-sso" id="btn-google-sso-login" onclick="AuthModule.openGoogleModal('login')">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"/>
+              </svg>
+              <span>Google (Gmail)</span>
+            </button>
+
+            <button type="button" class="btn-facebook-sso" id="btn-facebook-sso-login" onclick="AuthModule.authenticateFacebookAccount('login')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span>Facebook</span>
+            </button>
+          </div>
+
+          <!-- 1-Click Fast Profile Switcher -->
+          <div class="quick-profiles-wrapper">
+            <div class="quick-profiles-label">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Login Rápido de Demonstração (1 Clique)</span>
+            </div>
+            <div class="quick-profiles-buttons">
+              <button type="button" class="btn-quick-chip" onclick="AuthModule.quickLogin('mariaclark')">
+                <img src="assets/images/maria_clark.jpg" alt="Maria Clark" class="quick-chip-avatar" />
+                <div class="quick-chip-info">
+                  <span class="quick-chip-name">Maria Clark</span>
+                  <span class="quick-chip-role">Studio</span>
+                </div>
+              </button>
+
+              <button type="button" class="btn-quick-chip" onclick="AuthModule.quickLogin('matheusyah')">
+                <img src="assets/images/matheus_dahsan.jpg" alt="Matheus Dahsan" class="quick-chip-avatar" />
+                <div class="quick-chip-info">
+                  <span class="quick-chip-name">Matheus D.</span>
+                  <span class="quick-chip-role">Pro</span>
+                </div>
+              </button>
+
+              <button type="button" class="btn-quick-chip" onclick="AuthModule.quickLogin('robertomelo')">
+                <img src="assets/images/roberto_melo.jpg" alt="Roberto Melo" class="quick-chip-avatar" />
+                <div class="quick-chip-info">
+                  <span class="quick-chip-name">Roberto M.</span>
+                  <span class="quick-chip-role">Pro</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-or-divider">
+            <span>ou continue com e-mail ou username</span>
+          </div>
+
+          <form id="form-login">
+            <div class="auth-input-group">
+              <label class="auth-label">Identificador (Username ou E-mail)</label>
+              <div class="auth-input-wrap">
+                <input type="text" id="login-identifier" class="auth-input" placeholder="ex: mariaclark ou maria@clark.com" value="mariaclark" required />
+              </div>
+              <span style="font-size:0.72rem; color:var(--text-dimmed); margin-top:4px; display:block;">
+                Autentique com nome de usuário ou endereço de e-mail.
+              </span>
+            </div>
+
+            <div class="auth-input-group">
+              <label class="auth-label">Senha</label>
+              <div class="auth-input-wrap">
+                <input type="password" id="login-password" class="auth-input" placeholder="••••••••" required />
+              </div>
+            </div>
+
+            <button type="submit" class="auth-btn-submit">
+              Continuar com Credenciais
+            </button>
+          </form>
+
+          <p class="claude-security-subtext">
+            Protegido por autenticação TOTP RFC 6238 e criptografia TLS 1.3 de ponta a ponta.
+          </p>
+        </div>
+
+        <div id="form-register-pane" style="display:none;">
+          <!-- Social Registration Grid: Gmail & Facebook -->
+          <div class="social-buttons-grid">
+            <button type="button" class="btn-google-sso" id="btn-google-sso-register" onclick="AuthModule.openGoogleModal('register')">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"/>
+              </svg>
+              <span>Cadastrar com Gmail</span>
+            </button>
+
+            <button type="button" class="btn-facebook-sso" id="btn-facebook-sso-register" onclick="AuthModule.authenticateFacebookAccount('register')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span>Cadastrar com Facebook</span>
+            </button>
+          </div>
+
+          <div class="auth-or-divider">
+            <span>ou cadastre com formulário</span>
+          </div>
+          <form id="form-register">
+            <div class="auth-input-group">
+              <label class="auth-label">Nome Completo do Fotógrafo / Estúdio</label>
+              <input type="text" id="reg-name" class="auth-input" placeholder="Nome do fotógrafo" required />
+            </div>
+
+            <div class="auth-input-group">
+              <label class="auth-label">Username Exclusivo</label>
+              <input type="text" id="reg-username" class="auth-input" placeholder="ex: estudioleal" required />
+            </div>
+
+            <div class="auth-input-group">
+              <label class="auth-label">E-mail Profissional</label>
+              <input type="email" id="reg-email" class="auth-input" placeholder="contato@estudio.com" required />
+            </div>
+
+            <div class="auth-input-group">
+              <label class="auth-label">Definir Senha</label>
+              <input type="password" id="reg-password" class="auth-input" placeholder="••••••••" required />
+            </div>
+
+            <div class="auth-input-group">
+              <label class="auth-label">Nível de Assinatura Inicial</label>
+              <select id="reg-plan-select" class="auth-input">
+                <option value="free">Free (Gratuito - até 5 galerias)</option>
+                <option value="pro">Galerias Pro (R$ 54,90/mês)</option>
+                <option value="studio" selected>Site + Galerias Studio (R$ 89,90/mês)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="auth-btn-submit">
+              Finalizar Registro
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 2FA CHALLENGE -->
+      <div id="auth-step-2fa" class="step-2fa-verify" style="display:none;">
+        <div style="width:48px; height:48px; border-radius:8px; background:rgba(37,99,235,0.12); border:1px solid rgba(37,99,235,0.28); display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h2 style="font-size:1.3rem; font-weight:700; color:#fff; margin-bottom:6px;">
+          Verificação de Duplo Fator (2FA)
+        </h2>
+        <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.5;">
+          A conta <strong id="auth-2fa-user-hint" style="color:#fff;"></strong> possui segurança reforçada. Digite o código de 6 dígitos do seu app autenticador:
+        </p>
+
+        <div class="code-2fa-input-row">
+          <input type="text" maxlength="1" class="code-digit" value="4" />
+          <input type="text" maxlength="1" class="code-digit" value="8" />
+          <input type="text" maxlength="1" class="code-digit" value="2" />
+          <input type="text" maxlength="1" class="code-digit" value="9" />
+          <input type="text" maxlength="1" class="code-digit" value="1" />
+          <input type="text" maxlength="1" class="code-digit" value="0" />
+        </div>
+
+        <button type="button" id="btn-verify-2fa" class="auth-btn-submit">
+          Validar e Conectar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOOGLE SSO IDENTITY PICKER MODAL -->
+  <div class="modal-overlay" id="google-sso-modal">
+    <div class="google-sso-container">
+      <button class="modal-close-btn" onclick="AuthModule.closeGoogleModal()">&times;</button>
+      <div class="google-sso-header">
+        <svg width="28" height="28" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"/>
+          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"/>
+        </svg>
+        <h3 style="font-size:1.15rem; font-weight:700; color:#fff; margin-top:8px;">Fazer login com o Google</h3>
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:3px;">
+          Escolha uma conta para prosseguir para o <strong>PicDrop</strong>
+        </p>
+      </div>
+
+      <div id="google-accounts-selector" class="google-accounts-list">
+        <div class="google-account-item" onclick="AuthModule.authenticateGoogleAccount('maria')">
+          <img src="assets/images/maria_clark.jpg" class="google-account-avatar" alt="Maria Clark" />
+          <div class="google-account-details">
+            <div class="google-account-name">Maria Clark</div>
+            <div class="google-account-email">maria.clark.fotografia@gmail.com</div>
+          </div>
+          <span class="google-account-badge">Studio</span>
+        </div>
+
+        <div class="google-account-item" onclick="AuthModule.authenticateGoogleAccount('roberto')">
+          <img src="assets/images/roberto_melo.jpg" class="google-account-avatar" alt="Roberto Melo" />
+          <div class="google-account-details">
+            <div class="google-account-name">Roberto Melo</div>
+            <div class="google-account-email">roberto.melo.photo@gmail.com</div>
+          </div>
+          <span class="google-account-badge">Pro</span>
+        </div>
+
+        <div class="google-account-item" onclick="AuthModule.authenticateGoogleAccount('custom')">
+          <div class="google-account-avatar-placeholder">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="google-account-details">
+            <div class="google-account-name">Entrar com outra conta Google</div>
+            <div class="google-account-email">Usar outro endereço @gmail.com</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="google-sso-loading" style="display:none; text-align:center; padding:24px 0;">
+        <div class="sso-spinner"></div>
+        <div style="font-size:0.86rem; font-weight:600; color:#fff; margin-top:14px;">Autenticando via Google Identity Services...</div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Sincronizando credenciais e permissões OAuth 2.0</div>
+      </div>
+
+      <div style="text-align:center; font-size:0.72rem; color:var(--text-dimmed); margin-top:16px; line-height:1.5;">
+        Para continuar, o Google compartilhará seu nome, endereço de e-mail e foto do perfil com o PicDrop.
+      </div>
+    </div>
+  </div>
+
+  <!-- UPGRADE MODAL -->
+  <div class="modal-overlay" id="upgrade-plan-modal">
+    <div class="modal-container upgrade-modal-card">
+      <button class="modal-close-btn" onclick="PlansModule.closeUpgradeModal()">&times;</button>
+      <div style="width:48px; height:48px; border-radius:8px; background:rgba(37,99,235,0.12); border:1px solid rgba(37,99,235,0.28); display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <h2 style="font-size:1.3rem; font-weight:700; margin-bottom:8px; color:#fff;" id="upgrade-modal-feature-title">
+        Limite Alocado Atingido
+      </h2>
+      <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6; margin-bottom:24px;" id="upgrade-modal-feature-desc">
+        A funcionalidade solicitada exige um nível superior de serviço. Faça a transição de plano para desbloquear recursos ilimitados.
+      </p>
+
+      <button class="btn-cta-primary" id="upgrade-modal-action-btn" style="width:100%;">
+        Efetuar Upgrade de Nível
+      </button>
+
+  <!-- FLOATING TOAST NOTIFICATION CONTAINER -->
+  <div id="system-toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- NEW GALLERY MODAL -->
+  <div class="modal-overlay" id="modal-new-gallery">
+    <div class="modal-container" style="max-width: 560px;">
+      <button class="modal-close-btn" onclick="GalleriesModule.closeNewGalleryModal()">&times;</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <div class="modal-icon-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div>
+          <h2 style="font-size:1.25rem; font-weight:700; color:#fff; margin:0;">Criar Nova Galeria</h2>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Configure o ensaio e publique para seleção do cliente.</p>
+        </div>
+      </div>
+
+      <form id="form-new-gallery" onsubmit="GalleriesModule.handleCreateGallerySubmit(event)">
+        <div class="input-group">
+          <label for="new-gal-title" class="input-label">Título do Ensaio / Evento</label>
+          <input type="text" id="new-gal-title" class="input-field" placeholder="Ex: Casamento Laura &amp; André, Editorial Lumina" required />
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="input-group">
+            <label for="new-gal-client" class="input-label">Nome do Cliente ou Marca</label>
+            <input type="text" id="new-gal-client" class="input-field" placeholder="Ex: Camila Alcantara" required />
+          </div>
+
+          <div class="input-group">
+            <label for="new-gal-category" class="input-label">Categoria do Ensaio</label>
+            <select id="new-gal-category" class="input-field" style="background:#0b0e14; color:#fff; cursor:pointer;">
+              <option value="casamento">Casamento</option>
+              <option value="familia">Família &amp; Gestante</option>
+              <option value="editorial">Moda &amp; Editorial</option>
+              <option value="arquitetura">Arquitetura &amp; Design</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Fotografia de Capa</label>
+          <div class="gallery-cover-options-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/wedding_hands.jpg" checked />
+              <img src="assets/images/wedding_hands.jpg" alt="Casamento" />
+              <span>Casamento</span>
+            </label>
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/family_sunset.jpg" />
+              <img src="assets/images/family_sunset.jpg" alt="Família" />
+              <span>Família</span>
+            </label>
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/editorial_cover.jpg" />
+              <img src="assets/images/editorial_cover.jpg" alt="Editorial Fashion" />
+              <span>Editorial</span>
+            </label>
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/maternity_golden_hour.jpg" />
+              <img src="assets/images/maternity_golden_hour.jpg" alt="Gestante" />
+              <span>Gestante</span>
+            </label>
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/architecture_interior.jpg" />
+              <img src="assets/images/architecture_interior.jpg" alt="Arquitetura" />
+              <span>Design</span>
+            </label>
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/portfolio_camera.jpg" />
+              <img src="assets/images/portfolio_camera.jpg" alt="Retrato" />
+              <span>Studio</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:8px; padding:12px 14px; margin-bottom:18px; display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.82rem; color:var(--text-light); font-weight:500;">Proteção por PIN de Download</span>
+            <span style="font-size:0.75rem; color:#10b981; font-weight:600; font-family:var(--font-mono);">Automático (4 dígitos)</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.82rem; color:var(--text-light); font-weight:500;">Exportação Direta para Lightroom</span>
+            <span style="font-size:0.75rem; color:#10b981; font-weight:600; font-family:var(--font-mono);">Habilitado (RAW+JPEG)</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button type="button" class="btn-cta-secondary" onclick="GalleriesModule.closeNewGalleryModal()" style="padding:10px 18px;">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-cta-primary" style="padding:10px 22px;">
+            Publicar Galeria
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- LIGHTROOM SELECTION MODAL -->
+  <div class="modal-overlay" id="modal-lightroom">
+    <div class="modal-container" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="GalleriesModule.closeLightroomModal()">&times;</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+        <div class="modal-icon-badge" style="background:rgba(37,99,235,0.12); color:#60a5fa;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10v10H7z"/></svg>
+        </div>
+        <div>
+          <h2 style="font-size:1.2rem; font-weight:700; color:#fff; margin:0;">Exportação Adobe Lightroom</h2>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin:0;">Arquivos selecionados e aprovados pelo cliente.</p>
+        </div>
+      </div>
+
+      <p style="font-size:0.85rem; color:var(--text-light); line-height:1.6; margin-bottom:14px;">
+        Copie a lista de arquivos abaixo e cole diretamente na busca de texto do Adobe Lightroom Classic (Biblioteca &gt; Filtro de Texto &gt; Nome do Arquivo):
+      </p>
+
+      <div class="code-copy-box">
+        <textarea id="lightroom-filenames-textarea" class="code-textarea" readonly rows="3">DSC_8901.CR3, DSC_8904.CR3, DSC_8912.CR3, DSC_8928.CR3, DSC_8935.CR3, DSC_8940.CR3, DSC_8947.CR3, DSC_8955.CR3, DSC_8962.CR3, DSC_8970.CR3</textarea>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:18px; justify-content:flex-end;">
+        <button type="button" class="btn-cta-secondary" onclick="GalleriesModule.closeLightroomModal()" style="padding:9px 16px;">
+          Fechar
+        </button>
+        <button type="button" class="btn-cta-primary" onclick="GalleriesModule.copyLightroomList()" style="padding:9px 20px;">
+          Copiar Lista de Arquivos (10 Fotos)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN MODAL -->
+  <div class="modal-overlay" id="modal-pin-view">
+    <div class="modal-container" style="max-width: 440px; text-align:center;">
+      <button class="modal-close-btn" onclick="GalleriesModule.closePinModal()">&times;</button>
+      <div class="modal-icon-badge" style="background:rgba(16,185,129,0.12); color:#10b981; margin:0 auto 14px auto;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2 style="font-size:1.25rem; font-weight:700; color:#fff; margin-bottom:6px;">PIN de Download Seguro</h2>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:20px; line-height:1.5;">
+        Este código autoriza o cliente a baixar o pacote completo de fotografias em alta resolução original.
+      </p>
+
+      <div class="pin-display-card">
+        <span class="pin-number-digit">4</span>
+        <span class="pin-number-digit">8</span>
+        <span class="pin-number-digit">9</span>
+        <span class="pin-number-digit">2</span>
+      </div>
+
+      <div style="font-size:0.75rem; color:var(--text-dimmed); margin-top:12px; margin-bottom:20px;">
+        Criptografia AES-256 ativa • Válido para todos os downloads desta galeria
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button type="button" class="btn-cta-primary" onclick="GalleriesModule.copyPinCode()" style="padding:10px 22px;">
+          Copiar Código PIN
+        </button>
+        <button type="button" class="btn-cta-secondary" onclick="GalleriesModule.closePinModal()" style="padding:10px 18px;">
+          Concluído
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT PREVIEW LIGHTBOX MODAL -->
+  <div class="modal-overlay" id="modal-gallery-preview" style="display:none;">
+    <div class="modal-gallery-preview-container">
+      <button class="modal-close-btn" style="position:absolute; top:14px; right:16px; z-index:10; background:rgba(0,0,0,0.65); color:#fff; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;" onclick="GalleriesModule.closeClientPreviewModal()">&times;</button>
+      
+      <!-- HERO HEADER -->
+      <div class="preview-hero-header" id="preview-modal-hero">
+        <div class="preview-hero-overlay"></div>
+        <div class="preview-hero-content">
+          <div>
+            <div class="preview-hero-meta">
+              <span class="preview-modal-badge" id="preview-modal-badge">Alta Resolução</span>
+              <span class="preview-modal-pin" id="preview-modal-pin">PIN: 4892</span>
+            </div>
+            <h2 class="preview-modal-title" id="preview-modal-title">Título da Galeria</h2>
+            <p class="preview-modal-subtitle" id="preview-modal-subtitle">Ensaio Fotográfico por Maria Clark</p>
+          </div>
+
+          <button type="button" class="btn-cta-primary" onclick="GalleriesModule.simulateDownloadZip()" style="padding:10px 18px; display:inline-flex; align-items:center; gap:8px; white-space:nowrap;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Baixar Pacote ZIP</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- INSTRUCTIONS BAR -->
+      <div style="padding:12px 24px; background:#0b0f17; border-bottom:1px solid rgba(148,163,184,0.1); display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; color:var(--text-muted);">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="color:#ef4444; font-size:1.1rem;">❤️</span>
+          <span>Clique no coração para selecionar as fotos que entrarão no seu álbum oficial ou pós-produção.</span>
+        </div>
+        <div style="font-family:var(--font-mono); font-size:0.75rem; color:#34d399; display:flex; align-items:center; gap:4px;">
+          <span>●</span> Sincronização em tempo real
+        </div>
+      </div>
+
+      <!-- PHOTOS GRID -->
+      <div class="preview-modal-body">
+        <div class="preview-photos-grid" id="preview-modal-photos">
+          <!-- Rendered dynamically by GalleriesModule.openClientPreviewModal -->
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="preview-modal-footer">
+        <div style="font-size:0.78rem; color:var(--text-dimmed);">
+          PicDrop Client Experience • Criptografia TLS de Ponta a Ponta
+        </div>
+        <button type="button" class="btn-cta-secondary" onclick="GalleriesModule.closeClientPreviewModal()" style="padding:7px 18px; font-size:0.82rem;">
+          Concluir Visualização
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       ENTERPRISE CHECKOUT & PAYMENT GATEWAY MODAL
+       Brazilian SaaS Standard: PIX Instantâneo, Cartão de Crédito 12x, Boleto & NFS-e
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-checkout" style="display:none; z-index:9999;">
+    <div class="modal-checkout-container">
+      <!-- Checkout Header -->
+      <div class="checkout-header">
+        <div class="checkout-brand-title">
+          <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="none" width="22" height="22" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+          <div>
+            <h2 class="checkout-modal-heading">Checkout Seguro PicDrop</h2>
+            <span class="checkout-subheading">Ativação imediata de licença comercial e armazenamento dedicado</span>
+          </div>
+        </div>
+        <div class="checkout-header-badges">
+          <div class="ssl-shield-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>SSL 256-Bit</span>
+          </div>
+          <button class="modal-close-btn checkout-close-btn" onclick="PlansModule.closeCheckoutModal()">&times;</button>
+        </div>
+      </div>
+
+      <!-- Checkout 2-Column Grid -->
+      <div class="checkout-grid">
+        <!-- Coluna Esquerda: Resumo do Pedido & Detalhamento Financeiro -->
+        <div class="checkout-summary-column">
+          <div class="checkout-plan-card" id="checkout-plan-card">
+            <div class="checkout-plan-card-header">
+              <span class="checkout-plan-badge" id="checkout-selected-plan-badge">STUDIO</span>
+              <span class="checkout-guarantee-tag">Garantia 7 Dias</span>
+            </div>
+            <h3 class="checkout-plan-name" id="checkout-selected-plan-name">Site + Galerias Studio</h3>
+            <p class="checkout-plan-desc" id="checkout-selected-plan-desc">500 GB dedicados, domínio próprio (.com.br) incluso, inteligência artificial e galerias ilimitadas com entrega 4K.</p>
+
+            <!-- Billing Cycle Switcher within Checkout -->
+            <div class="checkout-cycle-toggle">
+              <button type="button" class="checkout-cycle-btn active" id="chk-cycle-annual" onclick="PlansModule.setCheckoutCycle('yearly')">
+                <span>Anual</span>
+                <span class="cycle-discount-pill">-35% OFF</span>
+              </button>
+              <button type="button" class="checkout-cycle-btn" id="chk-cycle-monthly" onclick="PlansModule.setCheckoutCycle('monthly')">
+                <span>Mensal</span>
+              </button>
+            </div>
+
+            <!-- Features Included in Checkout -->
+            <ul class="checkout-features-checklist" id="checkout-features-checklist">
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> <span>Galerias e clientes ilimitados</span></li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> <span>500 GB de armazenamento de alta performance</span></li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> <span>Domínio próprio grátis (ex: mariaclark.com.br)</span></li>
+              <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> <span>Exportação Lightroom Classic &amp; PIN de download</span></li>
+            </ul>
+          </div>
+
+          <!-- Coupon Box -->
+          <div class="checkout-coupon-box">
+            <div class="coupon-input-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              <input type="text" id="chk-coupon-input" class="coupon-input" placeholder="Cupom (ex: FOTOGRAFO10)" />
+              <button type="button" class="btn-apply-coupon" onclick="PlansModule.applyCheckoutCoupon()">Aplicar</button>
+            </div>
+            <div id="chk-coupon-feedback" class="coupon-feedback-msg" style="display:none;"></div>
+          </div>
+
+          <!-- Price Calculation Rows -->
+          <div class="checkout-breakdown">
+            <div class="breakdown-row">
+              <span id="chk-breakdown-plan-label">Plano Studio (Anual)</span>
+              <span id="chk-breakdown-subtotal" style="font-family:var(--font-mono);">R$ 1.078,80</span>
+            </div>
+            <div class="breakdown-row discount" id="chk-breakdown-cycle-discount-row">
+              <span style="color:#10b981;">Economia Plano Anual (35%)</span>
+              <span id="chk-breakdown-cycle-discount" style="font-family:var(--font-mono); color:#10b981;">- R$ 377,64</span>
+            </div>
+            <div class="breakdown-row discount" id="chk-breakdown-coupon-row" style="display:none;">
+              <span style="color:#38bdf8;">Cupom Promocional</span>
+              <span id="chk-breakdown-coupon-discount" style="font-family:var(--font-mono); color:#38bdf8;">- R$ 0,00</span>
+            </div>
+            <div class="breakdown-total-row">
+              <div>
+                <span class="total-label">Total a pagar:</span>
+                <span class="total-subtext" id="chk-breakdown-period-text">equivalente a R$ 58,43/mês</span>
+              </div>
+              <div class="total-amount-val" id="chk-breakdown-total">R$ 701,16</div>
+            </div>
+          </div>
+
+          <!-- Trust Seal & Guarantee -->
+          <div class="checkout-trust-box">
+            <div class="trust-box-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <div class="trust-box-text">
+              <strong>Garantia Incondicional de 7 Dias</strong>
+              <p>Conforme o Art. 49 do CDC, se não ficar 100% satisfeito com o PicDrop, devolvemos integralmente seu investimento com 1 clique.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Dados Cadastrais & Métodos de Pagamento -->
+        <div class="checkout-payment-column">
+          <!-- Step 1: Customer Data for Invoice & Registration -->
+          <div class="checkout-form-section">
+            <h4 class="checkout-section-title">
+              <span class="step-num">1</span>
+              <span>Dados para Emissão de Nota Fiscal (NFS-e)</span>
+            </h4>
+
+            <div class="checkout-fields-grid">
+              <div class="input-group">
+                <label class="input-label" for="chk-customer-name">Nome Completo / Razão Social</label>
+                <input type="text" id="chk-customer-name" class="input-field" placeholder="Ex: Maria Clark" value="Maria Clark" />
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="chk-customer-doc">CPF ou CNPJ</label>
+                <input type="text" id="chk-customer-doc" class="input-field font-mono" placeholder="000.000.000-00" value="48.921.340/0001-82" oninput="PlansModule.formatDocumentMask(this)" />
+              </div>
+            </div>
+
+            <div class="checkout-fields-grid">
+              <div class="input-group">
+                <label class="input-label" for="chk-customer-email">E-mail para Licença &amp; Faturas</label>
+                <input type="email" id="chk-customer-email" class="input-field" placeholder="voce@seuemail.com" value="contato@mariaclark.com.br" />
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="chk-customer-phone">WhatsApp / Telefone</label>
+                <input type="text" id="chk-customer-phone" class="input-field font-mono" placeholder="(11) 98765-4321" value="(11) 99842-1829" oninput="PlansModule.formatPhoneMask(this)" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Payment Method Tabs -->
+          <div class="checkout-form-section">
+            <h4 class="checkout-section-title">
+              <span class="step-num">2</span>
+              <span>Forma de Pagamento</span>
+            </h4>
+
+            <div class="payment-method-tabs">
+              <button type="button" class="pay-tab-btn active" id="tab-btn-pix" onclick="PlansModule.selectPaymentTab('pix')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span>PIX Instantâneo</span>
+                <span class="tab-pill-instant">Aprovação em 2s</span>
+              </button>
+
+              <button type="button" class="pay-tab-btn" id="tab-btn-card" onclick="PlansModule.selectPaymentTab('card')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <span>Cartão de Crédito</span>
+                <span class="tab-pill-installments">Até 12x</span>
+              </button>
+
+              <button type="button" class="pay-tab-btn" id="tab-btn-boleto" onclick="PlansModule.selectPaymentTab('boleto')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="7" y2="16"/><line x1="11" y1="8" x2="11" y2="16"/><line x1="15" y1="8" x2="15" y2="16"/><line x1="17" y1="8" x2="17" y2="16"/></svg>
+                <span>Boleto Bancário</span>
+              </button>
+            </div>
+
+            <!-- TAB 1: PIX INSTANTÂNEO -->
+            <div class="payment-tab-content active" id="tab-content-pix">
+              <div class="pix-payment-box">
+                <div class="pix-qr-wrap">
+                  <!-- Realist SVG QR Code for Pix -->
+                  <div class="pix-qr-canvas" id="pix-qr-canvas">
+                    <svg viewBox="0 0 140 140" width="130" height="130">
+                      <rect width="140" height="140" fill="#ffffff" rx="6" />
+                      <rect x="10" y="10" width="34" height="34" fill="#09090b" rx="3" />
+                      <rect x="14" y="14" width="26" height="26" fill="#ffffff" />
+                      <rect x="18" y="18" width="18" height="18" fill="#09090b" rx="2" />
+                      <rect x="96" y="10" width="34" height="34" fill="#09090b" rx="3" />
+                      <rect x="100" y="14" width="26" height="26" fill="#ffffff" />
+                      <rect x="104" y="18" width="18" height="18" fill="#09090b" rx="2" />
+                      <rect x="10" y="96" width="34" height="34" fill="#09090b" rx="3" />
+                      <rect x="14" y="100" width="26" height="26" fill="#ffffff" />
+                      <rect x="18" y="104" width="18" height="18" fill="#09090b" rx="2" />
+                      <rect x="52" y="14" width="8" height="8" fill="#09090b" />
+                      <rect x="68" y="14" width="12" height="8" fill="#09090b" />
+                      <rect x="52" y="30" width="16" height="8" fill="#09090b" />
+                      <rect x="76" y="30" width="10" height="8" fill="#09090b" />
+                      <rect x="50" y="50" width="10" height="10" fill="#09090b" />
+                      <rect x="70" y="50" width="12" height="8" fill="#09090b" />
+                      <rect x="90" y="50" width="10" height="12" fill="#09090b" />
+                      <rect x="110" y="50" width="18" height="8" fill="#09090b" />
+                      <rect x="14" y="56" width="12" height="10" fill="#09090b" />
+                      <rect x="34" y="56" width="8" height="18" fill="#09090b" />
+                      <rect x="56" y="70" width="28" height="12" fill="#09090b" />
+                      <rect x="92" y="70" width="14" height="14" fill="#09090b" />
+                      <rect x="114" y="68" width="14" height="16" fill="#09090b" />
+                      <rect x="52" y="96" width="10" height="14" fill="#09090b" />
+                      <rect x="72" y="96" width="14" height="8" fill="#09090b" />
+                      <rect x="96" y="96" width="12" height="12" fill="#09090b" />
+                      <rect x="118" y="96" width="10" height="18" fill="#09090b" />
+                      <rect x="60" y="118" width="24" height="10" fill="#09090b" />
+                      <rect x="94" y="118" width="14" height="10" fill="#09090b" />
+                    </svg>
+                  </div>
+                  <div class="pix-timer-box">
+                    <span class="pix-timer-label">Expira em:</span>
+                    <span class="pix-timer-count" id="pix-timer-count">14:59</span>
+                  </div>
+                </div>
+
+                <div class="pix-instructions-wrap">
+                  <div class="pix-step-item">
+                    <span class="pix-step-circle">1</span>
+                    <span>Abra o app do seu banco e selecione <strong>Pagar via PIX</strong>.</span>
+                  </div>
+                  <div class="pix-step-item">
+                    <span class="pix-step-circle">2</span>
+                    <span>Escaneie o QR Code ou copie o código Copia-e-Cola abaixo:</span>
+                  </div>
+
+                  <div class="pix-copia-cola-bar">
+                    <input type="text" id="chk-pix-payload" class="pix-payload-input" readonly value="00020126580014br.gov.bcb.pix0136picdrop-pagamentos-f9821@picdrop.com.br5204000053039865406701.165802BR5925PICDROP SAAS BRASIL LTDA6009SAO PAULO62070503***6304E8A2" />
+                    <button type="button" class="btn-copy-pix" onclick="PlansModule.copyPixKey()">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      <span>Copiar</span>
+                    </button>
+                  </div>
+
+                  <button type="button" class="btn-cta-primary btn-confirm-pix" id="btn-pix-confirm" onclick="PlansModule.processPixPayment()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Já fiz o PIX! Confirmar Pagamento Imediato</span>
+                  </button>
+                  <span class="pix-webhook-note">● Webhook Banco Central conectado • Ativação automática em 2 segundos</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: CARTÃO DE CRÉDITO -->
+            <div class="payment-tab-content" id="tab-content-card">
+              <!-- Visual Card Preview -->
+              <div class="card-virtual-preview" id="card-virtual-preview">
+                <div class="card-virtual-top">
+                  <span class="card-chip-glyph"></span>
+                  <div class="card-brand-display" id="card-brand-icon">
+                    <span class="brand-mastercard-glyph"></span>
+                  </div>
+                </div>
+                <div class="card-virtual-number" id="card-preview-number">•••• •••• •••• 4821</div>
+                <div class="card-virtual-bottom">
+                  <div>
+                    <span class="card-preview-label">TITULAR</span>
+                    <span class="card-preview-holder" id="card-preview-holder">MARIA CLARK</span>
+                  </div>
+                  <div>
+                    <span class="card-preview-label">VALIDADE</span>
+                    <span class="card-preview-exp" id="card-preview-exp">09/29</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card Form Inputs -->
+              <div class="card-form-grid">
+                <div class="input-group">
+                  <label class="input-label" for="chk-card-number">Número do Cartão</label>
+                  <div class="input-with-icon">
+                    <input type="text" id="chk-card-number" class="input-field font-mono" placeholder="0000 0000 0000 0000" maxlength="19" value="5412 8902 4821 7390" oninput="PlansModule.formatCardNumber(this)" />
+                    <span class="input-inline-brand" id="card-input-brand-text">Mastercard</span>
+                  </div>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label" for="chk-card-name">Nome Impresso no Cartão</label>
+                  <input type="text" id="chk-card-name" class="input-field" placeholder="Ex: MARIA CLARK" value="MARIA CLARK" oninput="PlansModule.updateCardHolder(this.value)" />
+                </div>
+              </div>
+
+              <div class="card-form-row-3">
+                <div class="input-group">
+                  <label class="input-label" for="chk-card-exp">Validade (MM/AA)</label>
+                  <input type="text" id="chk-card-exp" class="input-field font-mono" placeholder="MM/AA" maxlength="5" value="09/29" oninput="PlansModule.formatCardExp(this)" />
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label" for="chk-card-cvv">Código CVV</label>
+                  <input type="password" id="chk-card-cvv" class="input-field font-mono" placeholder="•••" maxlength="4" value="892" />
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label" for="chk-card-installments">Parcelamento</label>
+                  <select id="chk-card-installments" class="select-field">
+                    <option value="1">1x à vista sem juros</option>
+                    <option value="2">2x sem juros</option>
+                    <option value="3">3x sem juros</option>
+                    <option value="6">6x sem juros</option>
+                    <option value="12" selected>12x de R$ 58,43 sem juros</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="button" class="btn-cta-primary btn-pay-card" id="btn-card-submit" onclick="PlansModule.processCardPayment()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span id="btn-card-submit-text">Pagar com Cartão &amp; Ativar Licença</span>
+              </button>
+            </div>
+
+            <!-- TAB 3: BOLETO BANCÁRIO -->
+            <div class="payment-tab-content" id="tab-content-boleto">
+              <div class="boleto-box">
+                <div class="boleto-barcode-view">
+                  <div class="barcode-lines">|| | ||| | |||| | || | ||| || |||| | ||| | ||</div>
+                  <div class="boleto-digitavel" id="chk-boleto-digits">34191.79001 01043.510047 91020.150008 5 91820000070116</div>
+                </div>
+
+                <div class="boleto-details-row">
+                  <div>
+                    <span class="boleto-label">Vencimento:</span>
+                    <strong class="boleto-val" id="chk-boleto-due">16/09/2026 (3 dias úteis)</strong>
+                  </div>
+                  <div>
+                    <span class="boleto-label">Emissor:</span>
+                    <strong class="boleto-val">Banco Itaú / PicDrop Pagamentos</strong>
+                  </div>
+                </div>
+
+                <button type="button" class="btn-cta-primary btn-print-boleto" onclick="PlansModule.processBoletoPayment()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Gerar e Baixar Boleto Bancário Registrado</span>
+                </button>
+                <span class="boleto-note">Compensação bancária oficial em até 24 a 48 horas úteis.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout Footer -->
+      <div class="checkout-footer-bar">
+        <div class="checkout-footer-compliance">
+          <span>✓ Transação 100% Criptografada</span>
+          <span>✓ Padrão PCI-DSS Nível 1</span>
+          <span>✓ Suporte Comercial Prioritário</span>
+          <span>✓ Cancelamento sem multas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       OFFICIAL FISCAL RECEIPT MODAL
+       Printable & Downloadable Tax Receipt for Brazilian Law
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-receipt" style="display:none; z-index:10001;">
+    <div class="modal-receipt-container">
+      <button class="modal-close-btn receipt-close-btn" onclick="PlansModule.closeReceiptModal()">&times;</button>
+      
+      <div class="receipt-paper" id="receipt-printable-area">
+        <div class="receipt-header">
+          <div class="receipt-brand">
+            <div class="receipt-logo-mark">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+            </div>
+            <div>
+              <h2 class="receipt-company-name">PicDrop Tecnologia e Serviços SaaS Ltda.</h2>
+              <span class="receipt-company-doc">CNPJ: 42.109.876/0001-90 • Av. Paulista, 1842 - SP</span>
+            </div>
+          </div>
+          <div class="receipt-meta-block">
+            <div class="receipt-number-badge" id="receipt-tx-number">RECIBO FISCAL #TX-2026-8912</div>
+            <div class="receipt-date-text" id="receipt-tx-date">Data: 13/09/2026 às 07:15</div>
+          </div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Tomador dos Serviços -->
+        <div class="receipt-client-box">
+          <h4 class="receipt-subhead">TOMADOR DOS SERVIÇOS</h4>
+          <div class="receipt-client-grid">
+            <div><span class="rc-label">Nome / Razão Social:</span> <strong id="rc-client-name">Maria Clark Fotografia ME</strong></div>
+            <div><span class="rc-label">CPF / CNPJ:</span> <strong id="rc-client-doc">48.921.340/0001-82</strong></div>
+            <div><span class="rc-label">E-mail:</span> <strong id="rc-client-email">contato@mariaclark.com.br</strong></div>
+            <div><span class="rc-label">Status da Cobrança:</span> <span class="badge-paid-confirmed">LIQUIDADO / APROVADO</span></div>
+          </div>
+        </div>
+
+        <!-- Discriminação dos Serviços -->
+        <div class="receipt-services-table-wrap">
+          <table class="receipt-services-table">
+            <thead>
+              <tr>
+                <th>Descrição do Serviço / Licenciamento</th>
+                <th>Competência</th>
+                <th>Ciclo</th>
+                <th>Valor Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong id="rc-service-title">Licença de Software SaaS — PicDrop Studio</strong>
+                  <p id="rc-service-desc" style="font-size:0.75rem; color:#64748b; margin:2px 0 0 0;">Armazenamento Dedicado 500GB, Galerias Ilimitadas, Domínio Próprio e Exportação Lightroom Classic</p>
+                </td>
+                <td id="rc-service-competence">09/2026</td>
+                <td id="rc-service-cycle">Anual</td>
+                <td style="font-family:var(--font-mono); font-weight:700;" id="rc-service-val">R$ 701,16</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Totais e Autenticação -->
+        <div class="receipt-totals-grid">
+          <div class="receipt-hash-box">
+            <span class="rc-label">AUTENTICAÇÃO DIGITAL CRIPTOGRÁFICA (SHA-256):</span>
+            <code class="receipt-hash-code" id="rc-hash-code">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</code>
+            <p style="font-size:0.7rem; color:#64748b; margin-top:4px;">Documento gerado eletronicamente em conformidade com o Art. 1º da Lei nº 8.846/1994.</p>
+          </div>
+
+          <div class="receipt-summary-block">
+            <div class="rc-sum-row"><span>Subtotal:</span> <span id="rc-subtotal">R$ 1.078,80</span></div>
+            <div class="rc-sum-row discount"><span>Descontos Promocionais:</span> <span id="rc-discount">- R$ 377,64</span></div>
+            <div class="rc-sum-row total"><span>Total Liquidado:</span> <strong id="rc-total">R$ 701,16</strong></div>
+            <div class="rc-sum-payment" id="rc-payment-method">Forma: Cartão de Crédito Mastercard •••• 4821 (12x)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="receipt-actions-bar">
+        <button type="button" class="btn-cta-secondary" onclick="PlansModule.closeReceiptModal()">Fechar</button>
+        <button type="button" class="btn-cta-primary" onclick="PlansModule.printReceipt()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <span>Imprimir / Salvar em PDF</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/notifications.js"></script>
+  <script src="js/plans.js"></script>
+  <script src="js/security.js"></script>
+  <script src="js/domains.js"></script>
+  <script src="js/referral.js"></script>
+  <script src="js/galleries.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

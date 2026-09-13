@@ -1,0 +1,3035 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PicDrop — Painel Executivo & Demonstração Técnica</title>
+  <meta name="description" content="Ambiente de controle técnico e demonstração interativa dos subsistemas PicDrop: autenticação mista, 2FA TOTP, auditoria de sessões, registro de domínios DNS, programa de parcerias e controle de cotas RBAC." />
+
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Base Styles -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- App Isolation & Decoupling Script: Purge stale cache/service-workers from mercadinho -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        for (var r of regs) r.unregister();
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(keys) {
+        for (var k of keys) caches.delete(k);
+      });
+    }
+    try {
+      for (var i = localStorage.length - 1; i >= 0; i--) {
+        var key = localStorage.key(i);
+        if (key && !key.startsWith('picdrop_')) {
+          localStorage.removeItem(key);
+        }
+      }
+    } catch(e) {}
+  </script>
+
+  <style>
+    /* ==========================================================================
+       SERIOUS, HIGH-END EXECUTIVE SHOWCASE STYLES
+       Executive Midnight Slate & Precision Cobalt Architecture
+       ========================================================================== */
+    :root {
+      --showcase-bg: #0b0e14;
+      --showcase-surface: #101522;
+      --showcase-surface-elevated: #151b2c;
+      --showcase-border: rgba(148, 163, 184, 0.12);
+      --showcase-border-focus: #2563eb;
+      --showcase-text-primary: #ffffff;
+      --showcase-text-secondary: #94a3b8;
+      --showcase-text-tertiary: #64748b;
+      --showcase-mono: 'JetBrains Mono', monospace;
+      --showcase-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--showcase-bg) !important;
+      color: var(--showcase-text-primary) !important;
+      font-family: var(--showcase-sans) !important;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.01em;
+    }
+
+    /* Top Technical Bar */
+    .tech-header-strip {
+      background: #07090e;
+      border-bottom: 1px solid var(--showcase-border);
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      font-size: 0.74rem;
+      color: var(--showcase-text-tertiary);
+      font-family: var(--showcase-mono);
+      position: sticky;
+      top: 0;
+      z-index: 120;
+    }
+
+    .status-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    /* Sticky Console Navigation */
+    .console-nav {
+      position: sticky;
+      top: 40px;
+      background: rgba(11, 14, 20, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--showcase-border);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      z-index: 110;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+
+    .brand-mark span.version-tag {
+      font-family: var(--showcase-mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: #60a5fa;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(37, 99, 235, 0.28);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Discrete Executive Hub Button */
+    .executive-hub-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(37, 99, 235, 0.12);
+      color: #60a5fa;
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: var(--showcase-sans);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .executive-hub-btn:hover {
+      background: rgba(37, 99, 235, 0.22);
+      border-color: rgba(37, 99, 235, 0.5);
+      color: #93c5fd;
+    }
+
+    /* Segmented Plan Switcher */
+    .segmented-control {
+      display: flex;
+      align-items: center;
+      background: #0d111a;
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--showcase-border);
+    }
+
+    .segmented-control-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--showcase-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0 10px;
+    }
+
+    .segmented-btn {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--showcase-text-secondary);
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .segmented-btn:hover {
+      color: #fff;
+    }
+
+    .segmented-btn.active {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 1px 6px rgba(37, 99, 235, 0.35);
+    }
+
+    /* Module Section Container - Zero list: hidden by default, visible ONLY when active */
+    .module-card {
+      background: var(--showcase-surface);
+      border: 1px solid var(--showcase-border);
+      border-radius: 12px;
+      padding: 36px;
+      margin-bottom: 40px;
+      position: relative;
+      display: none;
+    }
+
+    .module-card.tab-active {
+      display: block !important;
+      animation: tabFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .module-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--showcase-border);
+    }
+
+    .module-badge {
+      font-family: var(--showcase-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #60a5fa;
+      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid rgba(37, 99, 235, 0.24);
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .module-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .module-description {
+      font-size: 0.9rem;
+      color: var(--showcase-text-secondary);
+      line-height: 1.6;
+      max-width: 780px;
+    }
+
+    /* Sub-containers & Grids */
+    .clean-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .sub-panel {
+      background: #0b0e14;
+      border: 1px solid var(--showcase-border);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .sub-panel-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--showcase-text-tertiary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Precision Inputs & Buttons */
+    .precision-input {
+      width: 100%;
+      background: #0b0e14;
+      border: 1px solid var(--showcase-border);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 10px 14px;
+      border-radius: 6px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .precision-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .precision-btn-primary {
+      background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.86rem;
+      padding: 10px 18px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .precision-btn-primary:hover {
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .precision-btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--showcase-border);
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 0.85rem;
+      padding: 9px 16px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .precision-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Executive Ledger / Billing Statement */
+    .statement-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .statement-table th {
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--showcase-text-tertiary);
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--showcase-border);
+    }
+
+    .statement-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--showcase-text-primary);
+    }
+
+    .statement-total-bar {
+      margin-top: 18px;
+      padding: 16px 20px;
+      background: #0b0e14;
+      border: 1px solid var(--showcase-border);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ==========================================================================
+       MISSION CONTROL HUD & TELEMETRY COCKPIT
+       ========================================================================== */
+    .console-cockpit-hud {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .hud-stat-box {
+      background: var(--showcase-surface);
+      border: 1px solid var(--showcase-border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.22s ease;
+    }
+
+    .hud-stat-box:hover {
+      border-color: rgba(37, 99, 235, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .hud-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--showcase-text-tertiary);
+      margin-bottom: 8px;
+    }
+
+    .hud-val-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .hud-val {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      font-family: var(--showcase-mono);
+      line-height: 1.2;
+    }
+
+    .hud-sub {
+      font-size: 0.72rem;
+      color: var(--showcase-text-secondary);
+      font-family: var(--showcase-mono);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hud-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hud-badge-mono {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #60a5fa;
+      background: rgba(37, 99, 235, 0.14);
+      border: 1px solid rgba(37, 99, 235, 0.28);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: var(--showcase-mono);
+    }
+
+    .hud-badge-discount {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.28);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: var(--showcase-mono);
+    }
+
+    .hud-progress-track {
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .hud-progress-fill {
+      height: 100%;
+      background: #2563eb;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* Quick Actions Bar */
+    .console-quick-actions-bar {
+      background: #0d111a;
+      border: 1px solid var(--showcase-border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .quick-actions-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--showcase-text-secondary);
+      white-space: nowrap;
+    }
+
+    .quick-actions-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .quick-act-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--showcase-border);
+      border-radius: 6px;
+      color: #e2e8f0;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .quick-act-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .quick-act-btn.primary {
+      background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
+    }
+
+    .quick-act-btn.primary:hover {
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+    }
+
+    /* Live Telemetry Terminal */
+    .terminal-container {
+      background: #06080d;
+      border: 1px solid var(--showcase-border);
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: var(--showcase-mono);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .terminal-header {
+      background: #090d14;
+      border-bottom: 1px solid var(--showcase-border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .terminal-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .terminal-title {
+      font-size: 0.74rem;
+      color: #64748b;
+      letter-spacing: 0.04em;
+    }
+
+    .terminal-status {
+      font-size: 0.68rem;
+      color: #10b981;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    .terminal-output {
+      padding: 16px 18px;
+      min-height: 160px;
+      max-height: 260px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.76rem;
+      line-height: 1.6;
+    }
+
+    .terminal-log-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #cbd5e1;
+    }
+
+    .terminal-time {
+      color: #64748b;
+      flex-shrink: 0;
+    }
+
+    .terminal-tag {
+      font-weight: 700;
+      padding: 0 4px;
+      border-radius: 2px;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+
+    .tag-auth { color: #60a5fa; background: rgba(37, 99, 235, 0.15); }
+    .tag-sec { color: #10b981; background: rgba(16, 185, 129, 0.15); }
+    .tag-dns { color: #f59e0b; background: rgba(245, 158, 11, 0.15); }
+    .tag-plan { color: #c084fc; background: rgba(139, 92, 246, 0.15); }
+    .tag-gal { color: #38bdf8; background: rgba(56, 189, 248, 0.15); }
+    .tag-bill { color: #34d399; background: rgba(52, 211, 153, 0.15); }
+
+    .terminal-text {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    @media (max-width: 960px) {
+      .console-cockpit-hud {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 580px) {
+      .console-cockpit-hud {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Modal visibility & display overrides */
+    .modal-overlay[style*="display: flex"],
+    .modal-overlay[style*="display:flex"],
+    .modal-overlay.active {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+    }
+
+    /* Code badge */
+    .mono-token {
+      font-family: var(--showcase-mono);
+      font-size: 0.8rem;
+      background: #0b0e14;
+      border: 1px solid var(--showcase-border);
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: #e4e4e7;
+    }
+
+
+
+    /* Strictly single-module display: zero list stacking permitted */
+    .module-card {
+      display: none !important;
+    }
+
+    .module-card.tab-active {
+      display: block !important;
+      animation: tabFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes tabFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ====================================================================
+       SUBSYSTEMS LAUNCHER HUB GRID (100% CLICK-BASED NAVIGATION)
+       ==================================================================== */
+    .subsystems-launcher-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .subsystem-tile-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.015) 100%);
+      border: 1px solid var(--showcase-border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .subsystem-tile-card:hover {
+      background: linear-gradient(180deg, rgba(37, 99, 235, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+      border-color: rgba(96, 165, 250, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(37, 99, 235, 0.15);
+    }
+
+    .subsystem-tile-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.6), transparent);
+      opacity: 0;
+      transition: opacity 0.22s ease;
+    }
+
+    .subsystem-tile-card:hover::after {
+      opacity: 1;
+    }
+
+    .tile-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tile-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #93c5fd;
+      transition: all 0.2s ease;
+    }
+
+    .subsystem-tile-card:hover .tile-icon-box {
+      background: rgba(37, 99, 235, 0.2);
+      border-color: rgba(96, 165, 250, 0.5);
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+
+    .tile-badge {
+      font-size: 0.7rem;
+      font-family: var(--showcase-mono);
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--showcase-text-secondary);
+      font-weight: 500;
+    }
+
+    .tile-content h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .tile-content p {
+      font-size: 0.82rem;
+      color: var(--showcase-text-secondary);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .tile-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #60a5fa;
+    }
+
+    .tile-footer span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .subsystem-tile-card:hover .tile-footer {
+      color: #93c5fd;
+    }
+
+    .module-return-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--showcase-border);
+      border-radius: 6px;
+      color: var(--showcase-text-secondary);
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .module-return-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Executive Module Breadcrumb Header */
+    .executive-module-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-wrap: wrap;
+    }
+
+    .executive-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: #cbd5e1;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .executive-back-btn:hover {
+      background: rgba(37, 99, 235, 0.18);
+      border-color: rgba(96, 165, 250, 0.4);
+      color: #ffffff;
+      transform: translateX(-2px);
+    }
+
+    .executive-breadcrumb-trail {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+    }
+
+    .executive-breadcrumb-trail .trail-root {
+      color: var(--showcase-text-tertiary);
+      cursor: pointer;
+      transition: color 0.15s ease;
+      font-weight: 500;
+    }
+
+    .executive-breadcrumb-trail .trail-root:hover {
+      color: #60a5fa;
+    }
+
+    .executive-breadcrumb-trail .trail-sep {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .executive-breadcrumb-trail .trail-active {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .executive-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-family: var(--showcase-mono);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #34d399;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    /* Live TOTP Countdown Timer */
+    .totp-timer-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 8px 14px;
+      border-radius: 6px;
+    }
+
+    .totp-timer-bar-wrap {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .totp-timer-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #3b82f6);
+      border-radius: 2px;
+      transition: width 1s linear;
+    }
+
+    /* Interactive Terminal CLI Prompt */
+    .terminal-cli-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: #090d14;
+      border-top: 1px solid var(--showcase-border);
+      font-family: var(--showcase-mono);
+    }
+
+    .terminal-cli-prompt {
+      color: #34d399;
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .terminal-cli-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-family: var(--showcase-mono);
+      font-size: 0.78rem;
+      outline: none;
+    }
+
+    .terminal-cli-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      color: #cbd5e1;
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .terminal-cli-btn:hover {
+      background: rgba(37, 99, 235, 0.3);
+      color: #fff;
+      border-color: rgba(96, 165, 250, 0.5);
+    }
+
+    /* In-Module Step Navigation Footer */
+    .module-step-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--showcase-border);
+      flex-wrap: wrap;
+    }
+
+    .step-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--showcase-border);
+      border-radius: 6px;
+      color: var(--showcase-text-secondary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .step-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .step-nav-btn.primary {
+      background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .step-nav-btn.primary:hover {
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 960px) {
+      .clean-grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .console-nav-links {
+        display: none;
+      }
+      .module-card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body class="view-mode-tabbed">
+
+  <!-- Technical Environment Strip -->
+  <div class="tech-header-strip">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span class="status-pulse-dot"></span>
+      <span style="letter-spacing:0.06em; font-weight:700; color:#ffffff;">PICDROP ENTERPRISE CONTROL PLANE</span>
+      <span style="opacity:0.35;">•</span>
+      <span>CLUSTER: SA-EAST-1 (SÃO PAULO)</span>
+      <span style="opacity:0.35;">•</span>
+      <span style="color:#10b981; font-weight:600;">LATÊNCIA: 12ms</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <span>C-SHIELD 2.5: ATIVO</span>
+      <span>ANYCAST DNS: SINCRONIZADO</span>
+      <span>TLS 1.3: SHA-256</span>
+    </div>
+  </div>
+
+  <!-- Sticky Executive Console Navigation -->
+  <nav class="console-nav">
+    <div class="brand-mark">
+      <a href="index.html" style="color:#fff; text-decoration:none; display:flex; align-items:center; gap:8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg>
+        <span>picdrop</span>
+      </a>
+      <span class="version-tag">CONSOLE EXECUTIVO v2.5</span>
+    </div>
+
+    <!-- Central Hub Action Button (No horizontal list) -->
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button type="button" class="precision-btn-secondary" onclick="switchConsoleTab('modulo-hub')" style="font-size:0.75rem; padding:5px 12px; display:inline-flex; align-items:center; gap:6px;">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Hub Central</span>
+      </button>
+    </div>
+
+    <!-- Plan Switcher & Profile & Return Link -->
+    <div style="display:flex; align-items:center; gap:14px;">
+      <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.03); border:1px solid var(--showcase-border); padding:4px 10px; border-radius:30px;">
+        <img src="assets/images/maria_clark.jpg" alt="Maria Clark" style="width:24px; height:24px; border-radius:50%; object-fit:cover; border:1px solid rgba(255,255,255,0.2);" />
+        <span style="font-size:0.75rem; font-weight:600; color:#fff;" id="top-nav-user-name">Maria Clark</span>
+        <span class="status-pulse-dot" style="margin:0;"></span>
+      </div>
+
+      <div class="segmented-control">
+        <span class="segmented-control-label">Plano Ativo</span>
+        <button class="segmented-btn" data-plan="free" onclick="switchActivePlan('free')">Free</button>
+        <button class="segmented-btn" data-plan="pro" onclick="switchActivePlan('pro')">Pro</button>
+        <button class="segmented-btn active" data-plan="studio" onclick="switchActivePlan('studio')">Studio</button>
+      </div>
+
+      <a href="index.html" class="precision-btn-secondary" style="font-size:0.78rem; padding:6px 14px;">
+        <span>Vitrine Principal</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Showcase Container -->
+  <main class="container" style="padding-top: 48px; padding-bottom: 96px; max-width: 1140px;">
+
+    <!-- ====================================================================
+         EXECUTIVE COCKPIT TELEMETRY HUD (MISSION CONTROL)
+         ==================================================================== -->
+    <section class="console-cockpit-hud" id="cockpit-telemetry">
+      <!-- HUD Box 1: Runtime & Connectivity -->
+      <div class="hud-stat-box">
+        <div class="hud-stat-header">
+          <span class="hud-stat-title">Cluster Operacional</span>
+          <span class="hud-stat-badge live">ONLINE</span>
+        </div>
+        <div class="hud-stat-value" id="hud-runtime-val">Node.js :4000</div>
+        <div class="hud-stat-sub">
+          <span class="pulse-emerald"></span>
+          <span>TLS 1.3 • HTTP/1.1 • Ativo</span>
+        </div>
+      </div>
+
+      <!-- HUD Box 2: Studio Identity & Level -->
+      <div class="hud-stat-box">
+        <div class="hud-stat-header">
+          <span class="hud-stat-title">Perfil Ativo</span>
+          <span class="hud-stat-badge" id="hud-profile-badge">STUDIO</span>
+        </div>
+        <div class="hud-stat-value" id="hud-profile-name">Maria Clark</div>
+        <div class="hud-stat-sub" id="hud-profile-plan">maria@clark.com • Plano Studio</div>
+      </div>
+
+      <!-- HUD Box 3: Storage Quota & Capacity -->
+      <div class="hud-stat-box">
+        <div class="hud-stat-header">
+          <span class="hud-stat-title">Armazenamento Alocado</span>
+          <span class="hud-stat-badge" id="hud-storage-pct">3.6%</span>
+        </div>
+        <div class="hud-stat-value" id="hud-storage-text">18.4 GB <span style="font-size:0.8rem; font-weight:400; color:var(--showcase-text-tertiary);">/ 500 GB</span></div>
+        <div class="hud-progress-wrap">
+          <div class="hud-progress-bar" id="hud-storage-bar" style="width: 3.6%;"></div>
+        </div>
+      </div>
+
+      <!-- HUD Box 4: Financial & Partner Credits -->
+      <div class="hud-stat-box">
+        <div class="hud-stat-header">
+          <span class="hud-stat-title">Fatura com Desconto</span>
+          <span class="hud-stat-badge" id="hud-discount-badge" style="background:rgba(16,185,129,0.14); color:#34d399; border:1px solid rgba(16,185,129,0.3);">-R$ 60</span>
+        </div>
+        <div class="hud-stat-value" id="hud-invoice-val">R$ 89,00<span style="font-size:0.75rem; font-weight:400; color:var(--showcase-text-tertiary);">/mês</span></div>
+        <div class="hud-stat-sub" id="hud-invoice-sub">3 indicações ativas (R$ 60 de crédito)</div>
+      </div>
+    </section>
+
+
+
+    <!-- ====================================================================
+         HUB CENTRAL DE MÓDULOS (PAINEL GERAL • NAVEGAÇÃO EXCLUSIVA POR CLIQUE)
+         ==================================================================== -->
+    <section class="module-card tab-active" id="modulo-hub" style="display: block;">
+      <div class="module-header" style="border-bottom:none; margin-bottom:8px;">
+        <div>
+          <div class="module-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Painel Central de Módulos • Navegação Exclusiva por Clique
+          </div>
+          <h2 class="module-title">Hub de Subsistemas do Console</h2>
+          <p class="module-description">
+            Selecione qualquer módulo abaixo para abrir seu ambiente exclusivo de operação e teste. Cada módulo opera de forma separada e independente, eliminando qualquer visualização em lista longa.
+          </p>
+        </div>
+      </div>
+
+      <div class="subsystems-launcher-grid">
+        <!-- Tile 1: Identificação -->
+        <div class="subsystem-tile-card" onclick="switchConsoleTab('modulo-auth')">
+          <div>
+            <div class="tile-top-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5M19 5l-1.5-1.5M16 7l-6.5 6.5A4 4 0 1 0 15 19l2-2v-3l2-2h3v-3l-1.5-1.5z"/></svg>
+              </div>
+              <span class="tile-badge">MÓDULO 01</span>
+            </div>
+            <div class="tile-content" style="margin-top: 14px;">
+              <h3>01. Identificação & Acesso</h3>
+              <p>Login híbrido por username ou e-mail corporativo, perfis instantâneos com 1 clique e SSO OAuth (Google & Facebook).</p>
+            </div>
+          </div>
+          <div class="tile-footer">
+            <span>Acessar Módulo →</span>
+            <span style="color:#34d399; font-size:0.7rem;">● Operacional</span>
+          </div>
+        </div>
+
+        <!-- Tile 2: Segurança 2FA -->
+        <div class="subsystem-tile-card" onclick="switchConsoleTab('modulo-2fa')">
+          <div>
+            <div class="tile-top-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <span class="tile-badge">MÓDULO 02</span>
+            </div>
+            <div class="tile-content" style="margin-top: 14px;">
+              <h3>02. Segurança 2FA & TOTP</h3>
+              <p>Simulador de token dinâmico de 6 dígitos, validação em tempo real, chave secreta Base32 e códigos de recuperação.</p>
+            </div>
+          </div>
+          <div class="tile-footer">
+            <span>Acessar Módulo →</span>
+            <span style="color:#34d399; font-size:0.7rem;">● Ativo</span>
+          </div>
+        </div>
+
+        <!-- Tile 3: Auditoria -->
+        <div class="subsystem-tile-card" onclick="switchConsoleTab('modulo-history')">
+          <div>
+            <div class="tile-top-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <span class="tile-badge">MÓDULO 03</span>
+            </div>
+            <div class="tile-content" style="margin-top: 14px;">
+              <h3>03. Auditoria & Sessões</h3>
+              <p>Trilha de auditoria com filtro interativo de eventos (sucesso/bloqueio), geolocalização e revogação em lote de sessões.</p>
+            </div>
+          </div>
+          <div class="tile-footer">
+            <span>Acessar Módulo →</span>
+            <span style="color:#60a5fa; font-size:0.7rem;">● 6 Sessões</span>
+          </div>
+        </div>
+
+        <!-- Tile 4: Domínio DNS -->
+        <div class="subsystem-tile-card" onclick="switchConsoleTab('modulo-domain')">
+          <div>
+            <div class="tile-top-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </div>
+              <span class="tile-badge">MÓDULO 04</span>
+            </div>
+            <div class="tile-content" style="margin-top: 14px;">
+              <h3>04. Domínio DNS & SSL</h3>
+              <p>Verificação ao vivo de apontamentos CNAME/A, emissão automática de certificado SSL Let's Encrypt e status de propagação.</p>
+            </div>
+          </div>
+          <div class="tile-footer">
+            <span>Acessar Módulo →</span>
+            <span style="color:#34d399; font-size:0.7rem;">● SSL Válido</span>
+          </div>
+        </div>
+
+        <!-- Tile 5: Faturamento -->
+        <div class="subsystem-tile-card" onclick="switchConsoleTab('modulo-referral')">
+          <div>
+            <div class="tile-top-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+              </div>
+              <span class="tile-badge">MÓDULO 05</span>
+            </div>
+            <div class="tile-content" style="margin-top: 14px;">
+              <h3>05. Faturamento & Indicações</h3>
+              <p>Programa parceiro Indique e Ganhe: R$ 20 por indicação, simulador dinâmico de créditos e cálculo de fatura em tempo real.</p>
+            </div>
+          </div>
+          <div class="tile-footer">
+            <span>Acessar Módulo →</span>
+            <span style="color:#34d399; font-size:0.7rem;">-R$ 60 / mês</span>
+          </div>
+        </div>
+
+        <!-- Tile 6: Cotas & Galerias -->
+        <div class="subsystem-tile-card" onclick="switchConsoleTab('modulo-plans')">
+          <div>
+            <div class="tile-top-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+              </div>
+              <span class="tile-badge">MÓDULO 06</span>
+            </div>
+            <div class="tile-content" style="margin-top: 14px;">
+              <h3>06. Cotas, Galerias & RBAC</h3>
+              <p>Simulador interativo de planos (Free, Pro, Studio), cotas de armazenamento, controle de PIN de segurança e Lightroom Direct.</p>
+            </div>
+          </div>
+          <div class="tile-footer">
+            <span>Acessar Módulo →</span>
+            <span style="color:#93c5fd; font-size:0.7rem;">● Studio (500GB)</span>
+          </div>
+        </div>
+
+        <!-- Tile 7: Live Terminal -->
+        <div class="subsystem-tile-card" onclick="switchConsoleTab('modulo-terminal')">
+          <div>
+            <div class="tile-top-row">
+              <div class="tile-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              </div>
+              <span class="tile-badge">MÓDULO 07</span>
+            </div>
+            <div class="tile-content" style="margin-top: 14px;">
+              <h3>07. Live Terminal & Telemetria</h3>
+              <p>Stream de logs operacionais em tempo real, filtros por categoria, exportação JSON e console de comando interativo.</p>
+            </div>
+          </div>
+          <div class="tile-footer">
+            <span>Acessar Módulo →</span>
+            <span style="color:#34d399; font-size:0.7rem;">● Streaming</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         MÓDULO 1: IDENTIFICAÇÃO (USERNAME OU E-MAIL)
+         ==================================================================== -->
+    <section class="module-card" id="modulo-auth" style="display: none;">
+      <!-- Executive Navigation & Breadcrumb Bar -->
+      <div class="executive-module-nav-bar">
+        <div class="executive-breadcrumb-trail">
+          <span class="crumb-link" onclick="switchConsoleTab('modulo-hub')">Console Executivo</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">01. Identificação &amp; Acesso Híbrido</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="executive-mode-badge">SUBSISTEMA ATIVO</span>
+          <button type="button" class="executive-back-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Voltar ao Hub Central</span>
+          </button>
+        </div>
+      </div>
+      <div class="module-header">
+        <div>
+          <div class="module-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5M19 5l-1.5-1.5M16 7l-6.5 6.5A4 4 0 1 0 15 19l2-2v-3l2-2h3v-3l-1.5-1.5z"/></svg>
+            Subsistema 01 • Autenticação Híbrida
+          </div>
+          <h2 class="module-title">Login Híbrido: Identificação por Nome de Usuário ou E-mail</h2>
+          <p class="module-description">
+            O pipeline de autenticação analisa a entrada fornecida e resolve tanto identificadores no padrão e-mail (<span class="mono-token">maria@clark.com</span>) quanto usernames de sistema (<span class="mono-token">@mariaclark</span> ou <span class="mono-token">mariaclark</span>), garantindo conformidade com padrões corporativos.
+          </p>
+        </div>
+      </div>
+
+      <div class="clean-grid-2">
+        <!-- Interactive Form -->
+        <div class="sub-panel">
+          <div class="sub-panel-title">Acesso Rápido & Validação de Credenciais</div>
+
+          <!-- Social SSO Grid: Gmail & Facebook -->
+          <div class="social-buttons-grid" style="margin-bottom:14px;">
+            <button type="button" class="btn-google-sso" onclick="simulateGoogleLogin()">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"/>
+              </svg>
+              <span>Google (Gmail)</span>
+            </button>
+
+            <button type="button" class="btn-facebook-sso" onclick="simulateFacebookLogin()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span>Facebook</span>
+            </button>
+          </div>
+
+          <!-- 1-Click Fast Profile Switcher -->
+          <div class="quick-profiles-wrapper" style="margin-bottom:14px;">
+            <div class="quick-profiles-label">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Login Rápido de Teste (1 Clique)</span>
+            </div>
+            <div class="quick-profiles-buttons">
+              <button type="button" class="btn-quick-chip" onclick="quickShowcaseLogin('mariaclark', 'maria@clark.com', 'Maria Clark', 'Plano Studio', 'assets/images/maria_clark.jpg')">
+                <img src="assets/images/maria_clark.jpg" alt="Maria" class="quick-chip-avatar" />
+                <div class="quick-chip-info">
+                  <span class="quick-chip-name">Maria Clark</span>
+                  <span class="quick-chip-role">Studio</span>
+                </div>
+              </button>
+              <button type="button" class="btn-quick-chip" onclick="quickShowcaseLogin('matheusyah', 'matheus@dahsan.com', 'Matheus Dahsan', 'Plano Pro', 'assets/images/matheus_dahsan.jpg')">
+                <img src="assets/images/matheus_dahsan.jpg" alt="Matheus" class="quick-chip-avatar" />
+                <div class="quick-chip-info">
+                  <span class="quick-chip-name">Matheus D.</span>
+                  <span class="quick-chip-role">Pro</span>
+                </div>
+              </button>
+              <button type="button" class="btn-quick-chip" onclick="quickShowcaseLogin('robertomelo', 'roberto.melo.photo@gmail.com', 'Roberto Melo', 'Plano Pro', 'assets/images/roberto_melo.jpg')">
+                <img src="assets/images/roberto_melo.jpg" alt="Roberto" class="quick-chip-avatar" />
+                <div class="quick-chip-info">
+                  <span class="quick-chip-name">Roberto M.</span>
+                  <span class="quick-chip-role">Pro</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-or-divider">
+            <span>ou com identificador manual</span>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-bottom:14px;">
+            <button class="precision-btn-secondary" style="font-size:0.75rem; padding:4px 8px; flex:1;" onclick="setLoginIdentifier('mariaclark')">
+              mariaclark
+            </button>
+            <button class="precision-btn-secondary" style="font-size:0.75rem; padding:4px 8px; flex:1;" onclick="setLoginIdentifier('maria@clark.com')">
+              maria@clark.com
+            </button>
+          </div>
+
+          <form onsubmit="handleDemoAuthSubmit(event)">
+            <div style="margin-bottom:12px;">
+              <label style="display:block; font-size:0.74rem; font-weight:600; color:var(--showcase-text-secondary); margin-bottom:4px;">
+                Identificador de Acesso
+              </label>
+              <input type="text" id="demo-login-id" class="precision-input" value="mariaclark" required />
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <label style="display:block; font-size:0.74rem; font-weight:600; color:var(--showcase-text-secondary); margin-bottom:4px;">
+                Credencial de Senha
+              </label>
+              <input type="password" id="demo-login-pass" class="precision-input" value="123456" required />
+            </div>
+
+            <button type="submit" class="precision-btn-primary" style="width:100%;">
+              <span>Autenticar Usuário</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </form>
+        </div>
+
+        <!-- Session State Readout -->
+        <div class="sub-panel" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div class="sub-panel-title">Estado de Sessão Ativa</div>
+            <div style="display:flex; align-items:center; gap:16px; margin:16px 0;">
+              <img src="assets/images/maria_clark.jpg" alt="Foto Maria Clark" style="width:52px; height:52px; border-radius:6px; object-fit:cover; border:1px solid var(--showcase-border);" />
+              <div>
+                <div style="font-size:1.05rem; font-weight:700; color:#fff;" id="demo-logged-name">Maria Clark</div>
+                <div style="font-family:var(--showcase-mono); font-size:0.75rem; color:#10b981;">STATUS: SESSÃO AUTENTICADA</div>
+              </div>
+            </div>
+
+            <div style="font-family:var(--showcase-mono); font-size:0.8rem; line-height:1.8; color:var(--showcase-text-secondary); border-top:1px solid var(--showcase-border); padding-top:14px;">
+              <div>• Username: <span style="color:#fff;">mariaclark</span></div>
+              <div>• E-mail: <span style="color:#fff;">maria@clark.com</span></div>
+              <div>• Nível de Acesso: <span id="demo-logged-plan" style="color:#fff;">Plano Studio</span></div>
+              <div>• Protocolo: <span style="color:#fff;">RFC 6238 TOTP Habilitado</span></div>
+            </div>
+          </div>
+
+          <div style="font-size:0.78rem; color:var(--showcase-text-tertiary); margin-top:14px;">
+            A validação resolve referências de banco de forma assíncrona com sanitização de prefixos e hashing seguro de tokens.
+          </div>
+        </div>
+      </div>
+
+      <!-- Module Step Navigation Footer -->
+      <div class="module-step-nav">
+        <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-hub')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Voltar ao Hub</span>
+        </button>
+        <span style="font-size:0.75rem; color:var(--showcase-text-tertiary);">Visualizando Subsistema 01 de 07 • Identificação</span>
+        <button type="button" class="step-nav-btn primary" onclick="switchConsoleTab('modulo-2fa')">
+          <span>Avançar: 02. Segurança 2FA</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         MÓDULO 2: SEGURANÇA 2FA COM TOTP & CHAVE CRIPTOGRÁFICA
+         ==================================================================== -->
+    <section class="module-card" id="modulo-2fa" style="display: none;">
+      <!-- Executive Navigation & Breadcrumb Bar -->
+      <div class="executive-module-nav-bar">
+        <div class="executive-breadcrumb-trail">
+          <span class="crumb-link" onclick="switchConsoleTab('modulo-hub')">Console Executivo</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">02. Segurança Criptográfica &amp; 2FA</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="executive-mode-badge">SUBSISTEMA ATIVO</span>
+          <button type="button" class="executive-back-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Voltar ao Hub Central</span>
+          </button>
+        </div>
+      </div>
+      <div class="module-header">
+        <div>
+          <div class="module-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Subsistema 02 • Segurança Criptográfica 2FA
+          </div>
+          <h2 class="module-title">Autenticação de Dois Fatores (RFC 6238 TOTP)</h2>
+          <p class="module-description">
+            Implementação de proteção em camadas para contas de fotografia profissional. Exige validação simétrica com gerador de chaves Base32 e verificação por código temporário de 6 dígitos.
+          </p>
+        </div>
+      </div>
+
+      <!-- State Toggle Bar -->
+      <div style="background:#09090b; border:1px solid var(--showcase-border); border-radius:8px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          <div>
+            <div style="font-size:0.92rem; font-weight:600; color:#fff;">Status do Módulo de Duplo Fator (2FA)</div>
+            <div id="showcase-2fa-status" style="font-size:0.78rem; color:#10b981; font-family:var(--showcase-mono);">
+              SISTEMA OPERANDO EM MODO RESTRITO: 2FA ATIVADO
+            </div>
+          </div>
+        </div>
+
+        <label class="switch">
+          <input type="checkbox" id="showcase-2fa-toggle" checked onchange="toggle2FADemo(this.checked)" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- High Precision QR Matrix & Keys -->
+      <div class="clean-grid-2">
+        <div class="sub-panel" style="display:flex; align-items:center; gap:24px;">
+          <!-- Dense Precision SVG QR Pattern -->
+          <div style="background:#ffffff; padding:12px; border-radius:6px; flex-shrink:0;">
+            <svg width="124" height="124" viewBox="0 0 124 124">
+              <rect width="124" height="124" fill="#ffffff" />
+              <!-- Top Left Marker -->
+              <rect x="8" y="8" width="32" height="32" fill="#09090b" />
+              <rect x="12" y="12" width="24" height="24" fill="#ffffff" />
+              <rect x="16" y="16" width="16" height="16" fill="#09090b" />
+              <!-- Top Right Marker -->
+              <rect x="84" y="8" width="32" height="32" fill="#09090b" />
+              <rect x="88" y="12" width="24" height="24" fill="#ffffff" />
+              <rect x="92" y="16" width="16" height="16" fill="#09090b" />
+              <!-- Bottom Left Marker -->
+              <rect x="8" y="84" width="32" height="32" fill="#09090b" />
+              <rect x="12" y="88" width="24" height="24" fill="#ffffff" />
+              <rect x="16" y="92" width="16" height="16" fill="#09090b" />
+              <!-- Dense High-Precision Data Pattern -->
+              <rect x="46" y="10" width="6" height="6" fill="#09090b" />
+              <rect x="58" y="10" width="6" height="6" fill="#09090b" />
+              <rect x="70" y="10" width="6" height="6" fill="#09090b" />
+              <rect x="46" y="22" width="6" height="6" fill="#09090b" />
+              <rect x="64" y="22" width="6" height="6" fill="#09090b" />
+              <rect x="52" y="34" width="6" height="6" fill="#09090b" />
+              <rect x="70" y="34" width="6" height="6" fill="#09090b" />
+              <rect x="10" y="46" width="6" height="6" fill="#09090b" />
+              <rect x="22" y="46" width="6" height="6" fill="#09090b" />
+              <rect x="34" y="46" width="6" height="6" fill="#09090b" />
+              <rect x="46" y="46" width="12" height="12" fill="#09090b" />
+              <rect x="64" y="46" width="6" height="6" fill="#09090b" />
+              <rect x="76" y="46" width="6" height="6" fill="#09090b" />
+              <rect x="88" y="46" width="6" height="6" fill="#09090b" />
+              <rect x="100" y="46" width="6" height="6" fill="#09090b" />
+              <rect x="46" y="64" width="6" height="6" fill="#09090b" />
+              <rect x="58" y="64" width="12" height="12" fill="#09090b" />
+              <rect x="76" y="64" width="6" height="6" fill="#09090b" />
+              <rect x="94" y="64" width="6" height="6" fill="#09090b" />
+              <rect x="46" y="82" width="6" height="6" fill="#09090b" />
+              <rect x="64" y="82" width="6" height="6" fill="#09090b" />
+              <rect x="82" y="82" width="6" height="6" fill="#09090b" />
+              <rect x="100" y="82" width="6" height="6" fill="#09090b" />
+              <rect x="46" y="94" width="6" height="6" fill="#09090b" />
+              <rect x="58" y="94" width="6" height="6" fill="#09090b" />
+              <rect x="76" y="94" width="6" height="6" fill="#09090b" />
+              <rect x="88" y="94" width="12" height="12" fill="#09090b" />
+              <rect x="106" y="94" width="6" height="6" fill="#09090b" />
+              <rect x="46" y="106" width="12" height="12" fill="#09090b" />
+              <rect x="70" y="106" width="6" height="6" fill="#09090b" />
+              <rect x="88" y="106" width="6" height="6" fill="#09090b" />
+            </svg>
+          </div>
+
+          <div>
+            <div style="font-size:0.75rem; font-weight:600; color:var(--showcase-text-tertiary); text-transform:uppercase; margin-bottom:4px;">
+              Chave Simétrica Base32
+            </div>
+            <div style="font-family:var(--showcase-mono); font-size:0.95rem; font-weight:600; color:#fff; background:#141418; padding:6px 10px; border-radius:4px; border:1px solid var(--showcase-border); display:inline-block;">
+              JBSWY3DPEHPK3PXP
+            </div>
+            <div style="font-size:0.75rem; color:var(--showcase-text-secondary); margin-top:8px;">
+              Compatível com Google Authenticator, 1Password, Bitwarden e Authy.
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-panel">
+          <div class="sub-panel-title">Códigos de Resgate de Contingência</div>
+          <div style="font-size:0.8rem; color:var(--showcase-text-secondary); margin-bottom:14px;">
+            Armazene estes códigos em cofre criptografado. Cada código possui uso único em caso de perda do dispositivo autenticador.
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; font-family:var(--showcase-mono); font-size:0.82rem;">
+            <div style="background:#141418; border:1px solid var(--showcase-border); padding:8px 12px; border-radius:4px; color:#e4e4e7;">
+              4829-1034 <span style="font-size:0.65rem; color:#10b981; float:right;">ATIVO</span>
+            </div>
+            <div style="background:#141418; border:1px solid var(--showcase-border); padding:8px 12px; border-radius:4px; color:#e4e4e7;">
+              9102-8374 <span style="font-size:0.65rem; color:#10b981; float:right;">ATIVO</span>
+            </div>
+            <div style="background:#141418; border:1px solid var(--showcase-border); padding:8px 12px; border-radius:4px; color:#e4e4e7;">
+              5519-2834 <span style="font-size:0.65rem; color:#10b981; float:right;">ATIVO</span>
+            </div>
+            <div style="background:#141418; border:1px solid var(--showcase-border); padding:8px 12px; border-radius:4px; color:#e4e4e7;">
+              7721-8392 <span style="font-size:0.65rem; color:#10b981; float:right;">ATIVO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive 2FA Verification Simulator Sub-Panel -->
+      <div class="sub-panel" style="margin-top:20px;">
+        <div class="sub-panel-title">Simulador Interativo de Desafio 2FA (Verificação de 6 Dígitos)</div>
+        <div style="font-size:0.8rem; color:var(--showcase-text-secondary); margin-bottom:14px;">
+          Teste a validação em tempo real de tokens dinâmicos gerados por aplicativos autenticadores (Google Authenticator, 1Password).
+        </div>
+
+        <!-- Live RFC 6238 TOTP Countdown Timer -->
+        <div class="totp-timer-container" style="margin-bottom:16px;">
+          <div class="totp-timer-label">
+            <span>JANELA DE ROTAÇÃO TOTP (RFC 6238)</span>
+            <span id="totp-timer-seconds">30s restantes</span>
+          </div>
+          <div class="totp-timer-bar-wrap">
+            <div class="totp-timer-bar-fill" id="totp-timer-bar" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <input type="text" id="demo-2fa-input-token" class="precision-input" style="width:160px; font-family:var(--showcase-mono); font-size:1.1rem; letter-spacing:0.18em; text-align:center;" maxlength="6" value="482910" />
+          <button type="button" class="precision-btn-primary" onclick="validateSimulatedTOTP()">
+            Validar Código 2FA
+          </button>
+          <button type="button" class="precision-btn-secondary" onclick="generateRandomTOTP()">
+            Gerar Novo Token
+          </button>
+          <button type="button" class="precision-btn-secondary" onclick="copyBase32Key()">
+            Copiar Chave Base32
+          </button>
+        </div>
+        <div id="demo-2fa-token-feedback" style="font-size:0.75rem; color:#10b981; font-family:var(--showcase-mono); margin-top:8px;">
+          ✔ CHAVE SINCRONIZADA COM SERVIDOR NTP • JANELA RFC 6238 ATIVA
+        </div>
+      </div>
+
+      <!-- Module Step Navigation Footer -->
+      <div class="module-step-nav">
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Voltar ao Hub</span>
+          </button>
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-auth')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Anterior: 01. Identificação</span>
+          </button>
+        </div>
+        <span style="font-size:0.75rem; color:var(--showcase-text-tertiary);">Visualizando Subsistema 02 de 07 • Segurança 2FA</span>
+        <button type="button" class="step-nav-btn primary" onclick="switchConsoleTab('modulo-history')">
+          <span>Avançar: 03. Auditoria</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         MÓDULO 3: AUDITORIA DE SESSÕES & HISTÓRICO DE LOGINS
+         ==================================================================== -->
+    <section class="module-card" id="modulo-history" style="display: none;">
+      <!-- Executive Navigation & Breadcrumb Bar -->
+      <div class="executive-module-nav-bar">
+        <div class="executive-breadcrumb-trail">
+          <span class="crumb-link" onclick="switchConsoleTab('modulo-hub')">Console Executivo</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">03. Trilha de Auditoria &amp; Sessões</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="executive-mode-badge">SUBSISTEMA ATIVO</span>
+          <button type="button" class="executive-back-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Voltar ao Hub Central</span>
+          </button>
+        </div>
+      </div>
+      <div class="module-header">
+        <div>
+          <div class="module-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Subsistema 03 • Trilha de Auditoria & Sessões
+          </div>
+          <h2 class="module-title">Histórico de Conexões e Monitoramento de Dispositivos</h2>
+          <p class="module-description">
+            Registro cronológico detalhado com análise de agente de usuário, resolução de endereço IP, coordenadas geográficas aproximadas e estado de verificação 2FA.
+          </p>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="precision-btn-secondary" onclick="simulateAuthEvent('success')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Simular Acesso Autorizado</span>
+          </button>
+          <button class="precision-btn-secondary" style="color:#ef4444; border-color:rgba(239,68,68,0.25);" onclick="simulateAuthEvent('failed')">
+            <span>Simular Tentativa Rejeitada</span>
+          </button>
+          <button class="precision-btn-primary" onclick="terminateAllSessions()">
+            <span>Revogar Outras Sessões</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Interactive Audit Filter Bar with Live Search -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <button type="button" class="quick-act-btn primary" id="filter-audit-all" onclick="filterAuditHistory('all')">Todos os Registros</button>
+          <button type="button" class="quick-act-btn" id="filter-audit-success" onclick="filterAuditHistory('success')">● Apenas Autorizados</button>
+          <button type="button" class="quick-act-btn" id="filter-audit-failed" onclick="filterAuditHistory('failed')">✕ Apenas Bloqueados</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; flex:1; max-width:380px;">
+          <input type="text" id="audit-search-input" class="precision-input" placeholder="Filtrar por IP, dispositivo, método..." oninput="searchAuditHistory(this.value)" style="font-size:0.8rem; padding:6px 12px; width:100%;" />
+          <span id="audit-count-summary" style="font-size:0.75rem; font-family:var(--showcase-mono); color:var(--showcase-text-secondary); white-space:nowrap;">6 registros</span>
+        </div>
+      </div>
+
+      <div style="background:#09090b; border:1px solid var(--showcase-border); border-radius:8px; overflow:hidden;">
+        <table class="statement-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Plataforma & Navegador</th>
+              <th>Endereço IP</th>
+              <th>Geolocalização</th>
+              <th>Método de Entrada</th>
+              <th>Status do Acesso</th>
+            </tr>
+          </thead>
+          <tbody id="login-history-tbody">
+            <!-- Rendered by security.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Module Step Navigation Footer -->
+      <div class="module-step-nav">
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Voltar ao Hub</span>
+          </button>
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-2fa')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Anterior: 02. Segurança 2FA</span>
+          </button>
+        </div>
+        <span style="font-size:0.75rem; color:var(--showcase-text-tertiary);">Visualizando Subsistema 03 de 07 • Auditoria</span>
+        <button type="button" class="step-nav-btn primary" onclick="switchConsoleTab('modulo-domain')">
+          <span>Avançar: 04. Domínio DNS</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         MÓDULO 4: PROVISIONAMENTO E REGISTRO DE DOMÍNIO PRÓPRIO
+         ==================================================================== -->
+    <section class="module-card" id="modulo-domain" style="display: none;">
+      <!-- Executive Navigation & Breadcrumb Bar -->
+      <div class="executive-module-nav-bar">
+        <div class="executive-breadcrumb-trail">
+          <span class="crumb-link" onclick="switchConsoleTab('modulo-hub')">Console Executivo</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">04. Domínio Personalizado &amp; DNS</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="executive-mode-badge">SUBSISTEMA ATIVO</span>
+          <button type="button" class="executive-back-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Voltar ao Hub Central</span>
+          </button>
+        </div>
+      </div>
+      <div class="module-header">
+        <div>
+          <div class="module-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Subsistema 04 • Provisionamento DNS & TLS
+          </div>
+          <h2 class="module-title">Conexão de Domínio Personalizado (.com.br / .com)</h2>
+          <p class="module-description">
+            Interface para consulta e aquisição de domínios corporativos com orquestração de registros DNS (A Record / CNAME) e geração de certificados SSL/TLS automáticos.
+          </p>
+        </div>
+      </div>
+
+      <!-- Current Connected Domain Ledger -->
+      <div style="background:#09090b; border:1px solid var(--showcase-border); border-radius:8px; padding:20px 24px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+        <div>
+          <div style="font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--showcase-text-tertiary); margin-bottom:4px;">
+            Domínio Primário Conectado ao Portfólio
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="status-pulse-dot"></span>
+            <span id="active-domain-name" style="font-size:1.25rem; font-weight:700; color:#ffffff; font-family:var(--showcase-sans);">
+              mariaclarkfoto.com.br
+            </span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:16px; font-family:var(--showcase-mono); font-size:0.8rem; flex-wrap:wrap;">
+          <div id="ssl-status-indicator">
+            <span style="color:#10b981;">TLS 1.3 • CERTIFICADO LET'S ENCRYPT ATIVO</span>
+          </div>
+          <div id="dns-status-indicator">
+            <span style="color:#10b981;">ROTEAMENTO CNAME SINCRONIZADO</span>
+          </div>
+          <button type="button" class="precision-btn-secondary" id="btn-verify-dns" onclick="testDNSPropagation()" style="padding:4px 10px; font-size:0.75rem;">
+            Verificar Propagação
+          </button>
+        </div>
+      </div>
+
+      <!-- Search & Register Console -->
+      <div class="sub-panel">
+        <div class="sub-panel-title">Verificação de Disponibilidade de Domínio</div>
+
+        <div style="display:flex; gap:12px; max-width:640px; margin-bottom:20px;">
+          <input type="text" id="domain-search-input" class="precision-input" placeholder="Informe a marca ou nome para consulta..." value="mariaclark" />
+          <button class="precision-btn-primary" id="btn-search-domain" style="white-space:nowrap;">
+            Consultar Registro
+          </button>
+        </div>
+
+        <div class="domain-results-grid" id="domain-results-grid">
+          <!-- Populated by domains.js -->
+        </div>
+      </div>
+
+      <!-- Module Step Navigation Footer -->
+      <div class="module-step-nav">
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Voltar ao Hub</span>
+          </button>
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-history')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Anterior: 03. Auditoria</span>
+          </button>
+        </div>
+        <span style="font-size:0.75rem; color:var(--showcase-text-tertiary);">Visualizando Subsistema 04 de 07 • Domínios DNS</span>
+        <button type="button" class="step-nav-btn primary" onclick="switchConsoleTab('modulo-referral')">
+          <span>Avançar: 05. Faturamento</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         MÓDULO 5: FATURAMENTO & PROGRAMA DE PARCERIAS
+         ==================================================================== -->
+    <section class="module-card" id="modulo-referral" style="display: none;">
+      <!-- Executive Navigation & Breadcrumb Bar -->
+      <div class="executive-module-nav-bar">
+        <div class="executive-breadcrumb-trail">
+          <span class="crumb-link" onclick="switchConsoleTab('modulo-hub')">Console Executivo</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">05. Faturamento &amp; Conciliação</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="executive-mode-badge">SUBSISTEMA ATIVO</span>
+          <button type="button" class="executive-back-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Voltar ao Hub Central</span>
+          </button>
+        </div>
+      </div>
+      <div class="module-header">
+        <div>
+          <div class="module-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            Subsistema 05 • Parcerias & Conciliação de Fatura
+          </div>
+          <h2 class="module-title">Programa de Indicação com Crédito Automático em Fatura</h2>
+          <p class="module-description">
+            Rastreamento de novos clientes através de links de afiliação. Cada conversão elegível abate pontualmente R$ 20,00 na próxima cobrança recorrente do estúdio.
+          </p>
+        </div>
+
+        <button class="precision-btn-secondary" id="btn-simulate-referral">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span>Simular Nova Conversão</span>
+        </button>
+      </div>
+
+      <!-- Affiliate Link and Metrics Strip -->
+      <div style="background:#09090b; border:1px solid var(--showcase-border); border-radius:8px; padding:20px 24px; margin-bottom:24px;">
+        <div style="font-size:0.75rem; font-weight:600; text-transform:uppercase; color:var(--showcase-text-tertiary); margin-bottom:8px;">
+          Link de Rastreamento Exclusivo do Fotógrafo
+        </div>
+        <div style="display:flex; gap:12px; max-width:600px; margin-bottom:24px;">
+          <input type="text" id="referral-link-input" class="precision-input" style="font-family:var(--showcase-mono); font-size:0.85rem;" value="https://picdrop.me/r/MARIACLARK20" readonly />
+          <button class="precision-btn-secondary" id="btn-copy-referral" style="white-space:nowrap;">
+            Copiar URL
+          </button>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px;">
+          <div style="background:#111116; border:1px solid var(--showcase-border); padding:14px; border-radius:6px;">
+            <div style="font-size:0.68rem; font-weight:600; color:var(--showcase-text-tertiary); text-transform:uppercase;">Visualizações do Link</div>
+            <div style="font-size:1.4rem; font-weight:700; color:#fff; font-family:var(--showcase-mono); margin-top:4px;" id="ref-clicks-count">48</div>
+          </div>
+          <div style="background:#111116; border:1px solid var(--showcase-border); padding:14px; border-radius:6px;">
+            <div style="font-size:0.68rem; font-weight:600; color:var(--showcase-text-tertiary); text-transform:uppercase;">Cadastros Registrados</div>
+            <div style="font-size:1.4rem; font-weight:700; color:#fff; font-family:var(--showcase-mono); margin-top:4px;" id="ref-registered-count">6</div>
+          </div>
+          <div style="background:#111116; border:1px solid var(--showcase-border); padding:14px; border-radius:6px;">
+            <div style="font-size:0.68rem; font-weight:600; color:var(--showcase-text-tertiary); text-transform:uppercase;">Assinaturas Ativas</div>
+            <div style="font-size:1.4rem; font-weight:700; color:#10b981; font-family:var(--showcase-mono); margin-top:4px;" id="ref-active-count">2</div>
+          </div>
+          <div style="background:#111116; border:1px solid var(--showcase-border); padding:14px; border-radius:6px;">
+            <div style="font-size:0.68rem; font-weight:600; color:var(--showcase-text-tertiary); text-transform:uppercase;">Crédito Acumulado</div>
+            <div style="font-size:1.4rem; font-weight:700; color:#fff; font-family:var(--showcase-mono); margin-top:4px;" id="ref-total-credit">R$ 40,00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Statement Table -->
+      <div class="sub-panel">
+        <div class="sub-panel-title">Demonstrativo da Próxima Fatura Recorrente</div>
+
+        <table class="statement-table">
+          <thead>
+            <tr>
+              <th>Item / Discriminação</th>
+              <th>Competência</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="invoice-plan-name">Assinatura Mensal • Plano Studio PicDrop</td>
+              <td style="font-family:var(--showcase-mono); color:var(--showcase-text-tertiary);">09/2026</td>
+              <td style="font-family:var(--showcase-mono); font-weight:600;" id="invoice-base-price">R$ 89,90</td>
+            </tr>
+            <tr id="invoice-discount-row">
+              <td style="color:#10b981;">Crédito de Parceria (2 conversões de indicação ativas)</td>
+              <td style="font-family:var(--showcase-mono); color:#10b981;">DESCONTO</td>
+              <td style="font-family:var(--showcase-mono); color:#10b981; font-weight:600;" id="invoice-discount-val">- R$ 40,00</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="statement-total-bar">
+          <div>
+            <div style="font-size:0.75rem; font-weight:600; text-transform:uppercase; color:var(--showcase-text-tertiary);">Total Líquido da Fatura</div>
+            <div style="font-size:0.8rem; color:var(--showcase-text-secondary);">Débito automático no cartão corporativo configurado</div>
+          </div>
+          <div style="font-size:1.45rem; font-weight:800; color:#ffffff; font-family:var(--showcase-mono);" id="invoice-total-val">
+            R$ 49,90
+          </div>
+        </div>
+      </div>
+
+      <!-- Module Step Navigation Footer -->
+      <div class="module-step-nav">
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Voltar ao Hub</span>
+          </button>
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-domain')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Anterior: 04. Domínio DNS</span>
+          </button>
+        </div>
+        <span style="font-size:0.75rem; color:var(--showcase-text-tertiary);">Visualizando Subsistema 05 de 07 • Faturamento</span>
+        <button type="button" class="step-nav-btn primary" onclick="switchConsoleTab('modulo-plans')">
+          <span>Avançar: 06. Cotas & Galerias</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         MÓDULO 6: CONTROLE DE COTAS E LIMITAÇÕES RBAC (FREE, PRO, STUDIO)
+         ==================================================================== -->
+    <section class="module-card" id="modulo-plans" style="display: none;">
+      <!-- Executive Navigation & Breadcrumb Bar -->
+      <div class="executive-module-nav-bar">
+        <div class="executive-breadcrumb-trail">
+          <span class="crumb-link" onclick="switchConsoleTab('modulo-hub')">Console Executivo</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">06. Matriz de Cotas &amp; Galerias RBAC</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="executive-mode-badge">SUBSISTEMA ATIVO</span>
+          <button type="button" class="executive-back-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Voltar ao Hub Central</span>
+          </button>
+        </div>
+      </div>
+      <div class="module-header">
+        <div>
+          <div class="module-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            Subsistema 06 • Controle de Acesso Baseado em Funções (RBAC)
+          </div>
+          <h2 class="module-title">Matriz de Cotas e Limitações Estruturais</h2>
+          <p class="module-description">
+            Regras de negócio implementadas para isolamento e controle de recursos computacionais. Alterne os planos abaixo para verificar o enforcement de limites em tempo real.
+          </p>
+        </div>
+
+        <button class="precision-btn-primary" id="btn-new-gallery">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Testar Criação de Galeria</span>
+        </button>
+      </div>
+
+      <!-- Live Quota Summary Cards -->
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-bottom:32px;">
+        <div class="sub-panel">
+          <div style="font-size:0.75rem; font-weight:600; color:var(--showcase-text-tertiary); text-transform:uppercase; margin-bottom:8px;">
+            Armazenamento em Nuvem
+          </div>
+          <div style="font-size:1.6rem; font-weight:700; color:#fff; font-family:var(--showcase-mono);" id="showcase-storage-val">
+            142 GB
+          </div>
+          <div style="font-size:0.75rem; color:var(--showcase-text-tertiary); margin-top:2px;" id="sidebar-quota-text">
+            de 500 GB alocados
+          </div>
+          <div class="quota-progress-bar" style="margin-top:14px; height:4px;">
+            <div class="quota-fill" id="sidebar-quota-fill" style="width:28%;"></div>
+          </div>
+        </div>
+
+        <div class="sub-panel">
+          <div style="font-size:0.75rem; font-weight:600; color:var(--showcase-text-tertiary); text-transform:uppercase; margin-bottom:8px;">
+            Galerias de Entrega Ativas
+          </div>
+          <div style="font-size:1.6rem; font-weight:700; color:#fff; font-family:var(--showcase-mono);" id="stat-galleries-count">
+            3
+          </div>
+          <div style="font-size:0.75rem; color:var(--showcase-text-tertiary); margin-top:2px;" id="quota-galleries-max">
+            Capacidade Ilimitada (Studio)
+          </div>
+          <div style="font-size:0.74rem; color:#10b981; margin-top:10px; font-family:var(--showcase-mono);">
+            STATUS: SEM RESTRIÇÕES
+          </div>
+        </div>
+
+        <div class="sub-panel">
+          <div style="font-size:0.75rem; font-weight:600; color:var(--showcase-text-tertiary); text-transform:uppercase; margin-bottom:8px;">
+            Regras de Governança Ativas
+          </div>
+          <div style="font-size:0.78rem; color:var(--showcase-text-secondary); line-height:1.6; margin-top:4px;">
+            • <strong>Plano Free</strong>: Teto de 5 galerias e 5 GB. Ferramentas PRO bloqueadas.<br />
+            • <strong>Plano Pro</strong>: Galerias ilimitadas e 100 GB. Domínio próprio restrito.<br />
+            • <strong>Plano Studio</strong>: 500 GB, domínio próprio e SEO liberados.
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Galleries Grid & Toolbar -->
+      <div class="sub-panel-title">Galerias Registradas &amp; Chaves de Acesso</div>
+
+      <div class="galleries-toolbar" style="margin-top:12px;">
+        <div class="galleries-search-box">
+          <svg class="galleries-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="gal-search-input-showcase" class="galleries-search-input" placeholder="Buscar por cliente, título ou data..." oninput="GalleriesModule.search(this.value)" />
+        </div>
+
+        <div class="galleries-category-pills">
+          <button type="button" class="gal-cat-pill active" data-cat="all" onclick="GalleriesModule.filterByCategory('all')">
+            <span>Todas</span>
+            <span class="cat-count-badge" id="cat-count-all">5</span>
+          </button>
+          <button type="button" class="gal-cat-pill" data-cat="casamento" onclick="GalleriesModule.filterByCategory('casamento')">
+            <span>Casamento</span>
+            <span class="cat-count-badge" id="cat-count-casamento">1</span>
+          </button>
+          <button type="button" class="gal-cat-pill" data-cat="familia" onclick="GalleriesModule.filterByCategory('familia')">
+            <span>Família &amp; Gestante</span>
+            <span class="cat-count-badge" id="cat-count-familia">2</span>
+          </button>
+          <button type="button" class="gal-cat-pill" data-cat="editorial" onclick="GalleriesModule.filterByCategory('editorial')">
+            <span>Editorial &amp; Moda</span>
+            <span class="cat-count-badge" id="cat-count-editorial">1</span>
+          </button>
+          <button type="button" class="gal-cat-pill" data-cat="arquitetura" onclick="GalleriesModule.filterByCategory('arquitetura')">
+            <span>Arquitetura</span>
+            <span class="cat-count-badge" id="cat-count-arquitetura">1</span>
+          </button>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.75rem; color:var(--showcase-text-tertiary);">Ordenar:</span>
+          <select class="galleries-sort-select" onchange="GalleriesModule.sort(this.value)">
+            <option value="recent">Mais Recentes</option>
+            <option value="photos">Mais Fotos</option>
+            <option value="selection">% Seleção Concluída</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="galleries-grid-display" id="galleries-grid-display">
+        <!-- Rendered by galleries.js -->
+      </div>
+
+
+      <!-- Module Step Navigation Footer -->
+      <div class="module-step-nav">
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Voltar ao Hub</span>
+          </button>
+          <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-referral')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Anterior: 05. Faturamento</span>
+          </button>
+        </div>
+        <span style="font-size:0.75rem; color:var(--showcase-text-tertiary);">Visualizando Subsistema 06 de 07 • Cotas & Galerias</span>
+        <button type="button" class="step-nav-btn primary" onclick="switchConsoleTab('modulo-terminal')">
+          <span>Avançar: 07. Live Terminal</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         MÓDULO 7: LIVE DIAGNOSTIC STREAM TERMINAL
+         ==================================================================== -->
+    <section class="module-card" id="modulo-terminal" style="display: none;">
+      <!-- Executive Navigation & Breadcrumb Bar -->
+      <div class="executive-module-nav-bar">
+        <div class="executive-breadcrumb-trail">
+          <span class="crumb-link" onclick="switchConsoleTab('modulo-hub')">Console Executivo</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">07. Live Terminal &amp; Telemetria</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="executive-mode-badge">SUBSISTEMA ATIVO</span>
+          <button type="button" class="executive-back-btn" onclick="switchConsoleTab('modulo-hub')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Voltar ao Hub Central</span>
+          </button>
+        </div>
+      </div>
+      <div class="module-header">
+        <div>
+          <div class="module-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            Subsistema 07 • Telemetria & Event Stream
+          </div>
+          <h2 class="module-title">Console de Diagnóstico & Stream de Eventos em Tempo Real</h2>
+          <p class="module-description">
+            Acompanhe a atividade interna do sistema operacional PicDrop: requisições HTTP, validações RBAC, autenticações OAuth, mutações de cota de armazenamento e transações do motor financeiro em formato padronizado.
+          </p>
+        </div>
+      </div>
+
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="terminal-dot dot-red"></span>
+            <span class="terminal-dot dot-yellow"></span>
+            <span class="terminal-dot dot-green"></span>
+          </div>
+          <span class="terminal-title">picdrop-daemon@enterprise-node: /var/log/audit.stream</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="terminal-status">● LIVE STREAM</span>
+            <button type="button" class="quick-act-btn" onclick="clearConsoleLog()" style="padding:2px 8px; font-size:0.7rem;">Limpar</button>
+            <button type="button" class="quick-act-btn" onclick="copyConsoleReport()" style="padding:2px 8px; font-size:0.7rem;">Copiar Logs</button>
+          </div>
+        </div>
+        <div class="terminal-output" id="terminal-output">
+          <!-- Populated dynamically via logConsoleEvent -->
+        </div>
+        <!-- Interactive Terminal CLI Prompt Bar -->
+        <div class="terminal-cli-bar">
+          <span class="terminal-cli-prompt">picdrop&gt;</span>
+          <input type="text" id="terminal-cli-input" class="terminal-cli-input" placeholder="Digite um comando (status, ping, audit, clear, rbac, help)..." onkeydown="if(event.key==='Enter') submitTerminalCli()" />
+          <button type="button" class="terminal-cli-btn" onclick="submitTerminalCli()">Executar</button>
+        </div>
+      </div>
+
+      <!-- Module Step Navigation Footer -->
+      <div class="module-step-nav">
+        <button type="button" class="step-nav-btn" onclick="switchConsoleTab('modulo-plans')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <span>Anterior: 06. Cotas & Galerias</span>
+        </button>
+        <span style="font-size:0.75rem; color:var(--showcase-text-tertiary);">Visualizando Subsistema 07 de 07 • Live Terminal</span>
+        <button type="button" class="step-nav-btn primary" onclick="switchConsoleTab('modulo-hub')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Voltar ao Hub Central de Módulos</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Upgrade Modal for Plan Limitations -->
+  <div class="modal-overlay" id="upgrade-plan-modal">
+    <div class="modal-container" style="max-width:440px; padding:32px; background:#121216;">
+      <button class="modal-close-btn" onclick="PlansModule.closeUpgradeModal()">&times;</button>
+      <div style="width:48px; height:48px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid var(--showcase-border); display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <h2 style="font-size:1.25rem; font-weight:700; color:#fff; margin-bottom:8px;" id="upgrade-modal-feature-title">
+        Limite de Recursos Atingido
+      </h2>
+      <p style="font-size:0.88rem; color:var(--showcase-text-secondary); line-height:1.6; margin-bottom:24px;" id="upgrade-modal-feature-desc">
+        A operação solicitada excede os limites alocados para o plano corrente. Realize a transição de nível de serviço para desbloquear esta funcionalidade.
+      </p>
+
+      <button class="precision-btn-primary" id="upgrade-modal-action-btn" style="width:100%;">
+        Efetuar Upgrade de Nível
+      </button>
+
+      <button class="precision-btn-secondary" onclick="PlansModule.closeUpgradeModal()" style="width:100%; margin-top:10px;">
+        Permanecer no Nível Atual
+      </button>
+    </div>
+  </div>
+
+  <!-- NEW GALLERY MODAL -->
+  <div class="modal-overlay" id="modal-new-gallery">
+    <div class="modal-container" style="max-width: 520px; background:#121216; border:1px solid var(--showcase-border);">
+      <button class="modal-close-btn" onclick="GalleriesModule.closeNewGalleryModal()">&times;</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <div class="modal-icon-badge" style="background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(37,99,235,0.25);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div>
+          <h2 style="font-size:1.2rem; font-weight:700; color:#fff; margin:0;">Criar Nova Galeria</h2>
+          <p style="font-size:0.8rem; color:var(--showcase-text-secondary); margin:0;">Configure o ensaio e publique para seleção do cliente.</p>
+        </div>
+      </div>
+
+      <form id="form-new-gallery" onsubmit="GalleriesModule.handleCreateGallerySubmit(event)">
+        <div class="input-group" style="margin-bottom:14px;">
+          <label for="new-gal-title" class="input-label">Título do Ensaio / Evento</label>
+          <input type="text" id="new-gal-title" class="input-field" placeholder="Ex: Campanha de Moda Inverno 2026" required />
+        </div>
+
+        <div class="input-group" style="margin-bottom:14px;">
+          <label for="new-gal-client" class="input-label">Nome do Cliente ou Marca</label>
+          <input type="text" id="new-gal-client" class="input-field" placeholder="Ex: Revista Vogue, Diretoria Executiva" required />
+        </div>
+
+        <div class="input-group" style="margin-bottom:14px;">
+          <label class="input-label">Capa de Apresentação</label>
+          <div class="gallery-cover-options-grid">
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/editorial_cover.jpg" checked />
+              <img src="assets/images/editorial_cover.jpg" alt="Editorial Fashion" />
+              <span>Editorial</span>
+            </label>
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/wedding_hands.jpg" />
+              <img src="assets/images/wedding_hands.jpg" alt="Casamento" />
+              <span>Casamento</span>
+            </label>
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/family_sunset.jpg" />
+              <img src="assets/images/family_sunset.jpg" alt="Família" />
+              <span>Família</span>
+            </label>
+            <label class="cover-option-item">
+              <input type="radio" name="cover-choice" value="assets/images/portfolio_camera.jpg" />
+              <img src="assets/images/portfolio_camera.jpg" alt="Retrato" />
+              <span>Retrato</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--showcase-border); border-radius:6px; padding:12px; margin-bottom:18px; display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.82rem; color:var(--showcase-text-secondary); font-weight:500;">Proteção por PIN de Download</span>
+            <span style="font-size:0.75rem; color:#10b981; font-weight:600; font-family:var(--showcase-mono);">Ativo (PIN: 4892)</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.82rem; color:var(--showcase-text-secondary); font-weight:500;">Exportação Direta para Lightroom</span>
+            <span style="font-size:0.75rem; color:#10b981; font-weight:600; font-family:var(--showcase-mono);">Habilitado (RAW+JPEG)</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button type="button" class="precision-btn-secondary" onclick="GalleriesModule.closeNewGalleryModal()" style="padding:8px 16px;">
+            Cancelar
+          </button>
+          <button type="submit" class="precision-btn-primary" style="padding:8px 20px;">
+            Publicar Galeria
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- LIGHTROOM SELECTION MODAL -->
+  <div class="modal-overlay" id="modal-lightroom">
+    <div class="modal-container" style="max-width: 520px; background:#121216; border:1px solid var(--showcase-border);">
+      <button class="modal-close-btn" onclick="GalleriesModule.closeLightroomModal()">&times;</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+        <div class="modal-icon-badge" style="background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(37,99,235,0.25);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10v10H7z"/></svg>
+        </div>
+        <div>
+          <h2 style="font-size:1.2rem; font-weight:700; color:#fff; margin:0;">Exportação Adobe Lightroom</h2>
+          <p style="font-size:0.78rem; color:var(--showcase-text-secondary); margin:0;">Arquivos selecionados e aprovados pelo cliente.</p>
+        </div>
+      </div>
+
+      <p style="font-size:0.85rem; color:var(--showcase-text-secondary); line-height:1.6; margin-bottom:14px;">
+        Copie a lista de arquivos abaixo e cole diretamente na busca de texto do Adobe Lightroom Classic (Biblioteca &gt; Filtro de Texto &gt; Nome do Arquivo):
+      </p>
+
+      <div class="code-copy-box" style="margin-bottom:16px;">
+        <textarea id="lightroom-filenames-textarea" class="code-textarea" readonly rows="3" style="width:100%; background:#090c12; border:1px solid var(--showcase-border); border-radius:6px; padding:10px; font-family:var(--showcase-mono); font-size:0.78rem; color:#60a5fa; resize:none;">DSC_8901.CR3, DSC_8904.CR3, DSC_8912.CR3, DSC_8928.CR3, DSC_8935.CR3, DSC_8940.CR3, DSC_8947.CR3, DSC_8955.CR3, DSC_8962.CR3, DSC_8970.CR3</textarea>
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <button type="button" class="precision-btn-secondary" onclick="GalleriesModule.closeLightroomModal()" style="padding:8px 16px;">
+          Fechar
+        </button>
+        <button type="button" class="precision-btn-primary" onclick="GalleriesModule.copyLightroomList()" style="padding:8px 20px;">
+          Copiar Lista (10 Fotos)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN MODAL -->
+  <div class="modal-overlay" id="modal-pin-view">
+    <div class="modal-container" style="max-width: 440px; text-align:center; background:#121216; border:1px solid var(--showcase-border);">
+      <button class="modal-close-btn" onclick="GalleriesModule.closePinModal()">&times;</button>
+      <div class="modal-icon-badge" style="background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.25); margin:0 auto 14px auto;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2 style="font-size:1.25rem; font-weight:700; color:#fff; margin-bottom:6px;">PIN de Download Seguro</h2>
+      <p style="font-size:0.84rem; color:var(--showcase-text-secondary); margin-bottom:20px; line-height:1.5;">
+        Este código autoriza o cliente a baixar o pacote completo de fotografias em alta resolução original.
+      </p>
+
+      <div class="pin-display-card" style="margin-bottom:14px;">
+        <span class="pin-number-digit">4</span>
+        <span class="pin-number-digit">8</span>
+        <span class="pin-number-digit">9</span>
+        <span class="pin-number-digit">2</span>
+      </div>
+
+      <div style="font-size:0.75rem; color:var(--showcase-text-tertiary); margin-bottom:20px;">
+        Criptografia AES-256 ativa • Válido para todos os downloads desta galeria
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button type="button" class="precision-btn-primary" onclick="GalleriesModule.copyPinCode()" style="padding:8px 20px;">
+          Copiar Código PIN
+        </button>
+        <button type="button" class="precision-btn-secondary" onclick="GalleriesModule.closePinModal()" style="padding:8px 16px;">
+          Concluído
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT PREVIEW LIGHTBOX MODAL -->
+  <div class="modal-overlay" id="modal-gallery-preview" style="display:none;">
+    <div class="modal-gallery-preview-container">
+      <button class="modal-close-btn" style="position:absolute; top:14px; right:16px; z-index:10; background:rgba(0,0,0,0.65); color:#fff; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;" onclick="GalleriesModule.closeClientPreviewModal()">&times;</button>
+      
+      <!-- HERO HEADER -->
+      <div class="preview-hero-header" id="preview-modal-hero">
+        <div class="preview-hero-overlay"></div>
+        <div class="preview-hero-content">
+          <div>
+            <div class="preview-hero-meta">
+              <span class="preview-modal-badge" id="preview-modal-badge">Alta Resolução</span>
+              <span class="preview-modal-pin" id="preview-modal-pin">PIN: 4892</span>
+            </div>
+            <h2 class="preview-modal-title" id="preview-modal-title">Título da Galeria</h2>
+            <p class="preview-modal-subtitle" id="preview-modal-subtitle">Ensaio Fotográfico por Maria Clark</p>
+          </div>
+
+          <button type="button" class="precision-btn-primary" onclick="GalleriesModule.simulateDownloadZip()" style="padding:10px 18px; display:inline-flex; align-items:center; gap:8px; white-space:nowrap;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Baixar Pacote ZIP</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- INSTRUCTIONS BAR -->
+      <div style="padding:12px 24px; background:#0b0f17; border-bottom:1px solid rgba(148,163,184,0.1); display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; color:var(--showcase-text-secondary);">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="color:#ef4444; font-size:1.1rem;">❤️</span>
+          <span>Clique no coração para selecionar as fotos que entrarão no seu álbum oficial ou pós-produção.</span>
+        </div>
+        <div style="font-family:var(--showcase-mono); font-size:0.75rem; color:#34d399; display:flex; align-items:center; gap:4px;">
+          <span>●</span> Sincronização em tempo real
+        </div>
+      </div>
+
+      <!-- PHOTOS GRID -->
+      <div class="preview-modal-body">
+        <div class="preview-photos-grid" id="preview-modal-photos">
+          <!-- Rendered dynamically by GalleriesModule.openClientPreviewModal -->
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="preview-modal-footer">
+        <div style="font-size:0.78rem; color:var(--showcase-text-tertiary);">
+          PicDrop Client Experience • Criptografia TLS de Ponta a Ponta
+        </div>
+        <button type="button" class="precision-btn-secondary" onclick="GalleriesModule.closeClientPreviewModal()" style="padding:7px 18px; font-size:0.82rem;">
+          Concluir Visualização
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOOGLE SSO IDENTITY PICKER MODAL -->
+
+  <div class="modal-overlay" id="google-sso-modal">
+    <div class="google-sso-container">
+      <button class="modal-close-btn" onclick="AuthModule.closeGoogleModal()">&times;</button>
+      <div class="google-sso-header">
+        <svg width="28" height="28" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"/>
+          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"/>
+        </svg>
+        <h3 style="font-size:1.15rem; font-weight:700; color:#fff; margin-top:8px;">Fazer login com o Google</h3>
+        <p style="font-size:0.82rem; color:var(--showcase-text-secondary); margin-top:3px;">
+          Escolha uma conta para prosseguir para o <strong>PicDrop</strong>
+        </p>
+      </div>
+
+      <div id="google-accounts-selector" class="google-accounts-list">
+        <div class="google-account-item" onclick="AuthModule.authenticateGoogleAccount('maria')">
+          <img src="assets/images/maria_clark.jpg" class="google-account-avatar" alt="Maria Clark" />
+          <div class="google-account-details">
+            <div class="google-account-name">Maria Clark</div>
+            <div class="google-account-email">maria.clark.fotografia@gmail.com</div>
+          </div>
+          <span class="google-account-badge">Studio</span>
+        </div>
+
+        <div class="google-account-item" onclick="AuthModule.authenticateGoogleAccount('roberto')">
+          <img src="assets/images/roberto_melo.jpg" class="google-account-avatar" alt="Roberto Melo" />
+          <div class="google-account-details">
+            <div class="google-account-name">Roberto Melo</div>
+            <div class="google-account-email">roberto.melo.photo@gmail.com</div>
+          </div>
+          <span class="google-account-badge">Pro</span>
+        </div>
+
+        <div class="google-account-item" onclick="AuthModule.authenticateGoogleAccount('custom')">
+          <div class="google-account-avatar-placeholder">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="google-account-details">
+            <div class="google-account-name">Entrar com outra conta Google</div>
+            <div class="google-account-email">Usar outro endereço @gmail.com</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="google-sso-loading" style="display:none; text-align:center; padding:24px 0;">
+        <div class="sso-spinner"></div>
+        <div style="font-size:0.86rem; font-weight:600; color:#fff; margin-top:14px;">Autenticando via Google Identity Services...</div>
+        <div style="font-size:0.75rem; color:var(--showcase-text-secondary); margin-top:4px;">Sincronizando credenciais e permissões OAuth 2.0</div>
+      </div>
+
+      <div style="text-align:center; font-size:0.72rem; color:var(--showcase-text-tertiary); margin-top:16px; line-height:1.5;">
+        Para continuar, o Google compartilhará seu nome, endereço de e-mail e foto do perfil com o PicDrop.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/notifications.js"></script>
+  <script src="js/plans.js"></script>
+  <script src="js/security.js"></script>
+  <script src="js/domains.js"></script>
+  <script src="js/referral.js"></script>
+  <script src="js/galleries.js"></script>
+  <script src="js/auth.js"></script>
+
+  <script>
+    function setLoginIdentifier(val) {
+      document.getElementById('demo-login-id').value = val;
+      NotificationCenter.info(`Identificador selecionado: ${val}`, 'Formulário Preparado');
+    }
+
+    function simulateGoogleLogin() {
+      NotificationCenter.info('Conectando ao Google Identity Services (OAuth 2.0)...', 'Google Identity');
+      setTimeout(() => {
+        quickShowcaseLogin('mariaclark', 'maria.clark.fotografia@gmail.com', 'Maria Clark', 'Plano Studio', 'assets/images/maria_clark.jpg');
+        SecurityModule.recordLogin('Google SSO (Gmail)', 'maria.clark.fotografia@gmail.com', 'success', false);
+        NotificationCenter.success('Autenticação Google Identity concluída com sucesso.', 'Google SSO Conectado');
+      }, 500);
+    }
+
+    function simulateFacebookLogin() {
+      NotificationCenter.info('Conectando ao Facebook Login (Meta Identity Platform)...', 'Facebook OAuth');
+      setTimeout(() => {
+        quickShowcaseLogin('fotografo_fb', 'fotografo.estudio@facebook.com', 'Fotógrafo(a) Meta Studio', 'Plano Studio', 'assets/images/editorial_cover.jpg');
+        SecurityModule.recordLogin('Facebook OAuth 2.0', 'fotografo.estudio@facebook.com', 'success', false);
+        NotificationCenter.success('Autenticado com sucesso via Facebook.', 'Facebook Conectado', 'FACEBOOK');
+      }, 500);
+    }
+
+    function quickShowcaseLogin(username, email, name, planName, avatar) {
+      document.getElementById('demo-login-id').value = username;
+      const nameEl = document.getElementById('demo-logged-name');
+      const planEl = document.getElementById('demo-logged-plan');
+      if (nameEl) nameEl.textContent = name;
+      if (planEl) planEl.textContent = planName;
+      
+      const avatarEl = document.querySelector('#modulo-auth img[alt="Foto Maria Clark"]');
+      if (avatarEl && avatar) avatarEl.src = avatar;
+
+      const hudName = document.getElementById('hud-profile-name');
+      if (hudName) hudName.textContent = name;
+
+      SecurityModule.recordLogin('Acesso Rápido (1-Clique)', `@${username}`, 'success', false);
+      NotificationCenter.success(`Sessão autorizada como ${name} (${planName}).`, 'Sessão Iniciada');
+      updateConsoleHUD();
+    }
+
+    function handleDemoAuthSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('demo-login-id').value;
+      const pass = document.getElementById('demo-login-pass').value;
+      AuthModule.handleLoginSubmit(id, pass);
+      updateConsoleHUD();
+    }
+
+    function toggle2FADemo(checked) {
+      SecurityModule.set2FAState(checked);
+      const statusEl = document.getElementById('showcase-2fa-status');
+      if (statusEl) {
+        statusEl.innerHTML = checked 
+          ? 'SISTEMA OPERANDO EM MODO RESTRITO: 2FA ATIVADO' 
+          : 'MODO CONVENCIONAL: 2FA DESATIVADO';
+        statusEl.style.color = checked ? '#10b981' : '#a1a1aa';
+      }
+      if (checked) {
+        NotificationCenter.success('Autenticação em dois fatores (2FA) habilitada.', 'Segurança da Conta');
+      } else {
+        NotificationCenter.warning('Autenticação em dois fatores desativada.', 'Segurança da Conta');
+      }
+    }
+
+    function simulateAuthEvent(type) {
+      if (type === 'success') {
+        SecurityModule.recordLogin('Username (@mariaclark)', 'mariaclark', 'success', true);
+        NotificationCenter.success('Acesso autorizado gravado na trilha de auditoria TLS 1.3.', 'Auditoria de Acesso');
+      } else {
+        SecurityModule.recordLogin('E-mail (acesso_nao_reconhecido@ip.net)', 'desconhecido', 'failed', false);
+        NotificationCenter.error('Tentativa não autorizada bloqueada e registrada na auditoria.', 'Bloqueio de Segurança');
+      }
+    }
+
+    function terminateAllSessions() {
+      SecurityModule.terminateOtherSessions();
+    }
+
+    function switchActivePlan(planId) {
+      PlansModule.setPlan(planId);
+      document.querySelectorAll('.segmented-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-plan') === planId);
+      });
+      updateConsoleHUD();
+      NotificationCenter.studio(`Nível de governança alterado para Plano ${planId.toUpperCase()}.`, 'Matriz de Recursos');
+    }
+
+    // =========================================================================
+    // MISSION CONTROL HUD & TERMINAL ENGINE
+    // =========================================================================
+    function updateConsoleHUD() {
+      try {
+        const plan = PlansModule.getCurrentPlan ? PlansModule.getCurrentPlan() : 'studio';
+        const planConfig = PlansModule.getPlanConfig ? PlansModule.getPlanConfig() : { name: 'Studio', storageGB: 500 };
+        
+        // Profile badge and sub
+        const badgeEl = document.getElementById('hud-profile-badge');
+        const planEl = document.getElementById('hud-profile-plan');
+        if (badgeEl) badgeEl.textContent = plan.toUpperCase();
+        if (planEl) {
+          const emailInput = document.getElementById('demo-login-id');
+          const val = emailInput ? emailInput.value : 'maria@clark.com';
+          const displayEmail = val.includes('@') ? val : `${val}@picdrop.io`;
+          planEl.textContent = `${displayEmail} • Plano ${planConfig.name}`;
+        }
+
+        // Storage calculations
+        const storageValEl = document.getElementById('hud-storage-text');
+        const storagePctEl = document.getElementById('hud-storage-pct');
+        const storageBarEl = document.getElementById('hud-storage-bar');
+        
+        let usedGB = 18.4;
+        let totalGB = planConfig.storageGB || 500;
+        if (plan === 'free') {
+          usedGB = 4.2;
+          totalGB = 5;
+        } else if (plan === 'pro') {
+          usedGB = 18.4;
+          totalGB = 100;
+        } else {
+          usedGB = 18.4;
+          totalGB = 500;
+        }
+
+        const pct = Math.min(100, Math.round((usedGB / totalGB) * 1000) / 10);
+        if (storageValEl) storageValEl.innerHTML = `${usedGB} GB <span style="font-size:0.8rem; font-weight:400; color:var(--showcase-text-tertiary);">/ ${totalGB} GB</span>`;
+        if (storagePctEl) storagePctEl.textContent = `${pct}%`;
+        if (storageBarEl) storageBarEl.style.width = `${pct}%`;
+
+        // Pricing & discount calculation
+        const invoiceValEl = document.getElementById('hud-invoice-val');
+        const discountBadgeEl = document.getElementById('hud-discount-badge');
+        const invoiceSubEl = document.getElementById('hud-invoice-sub');
+        
+        let basePrice = plan === 'studio' ? 149 : (plan === 'pro' ? 89 : 0);
+        let activeReferrals = 3;
+        if (window.ReferralModule && ReferralModule.getDiscountStats) {
+          const stats = ReferralModule.getDiscountStats();
+          if (stats && typeof stats.activeReferrals === 'number') {
+            activeReferrals = stats.activeReferrals;
+          }
+        }
+        const totalDiscount = activeReferrals * 20;
+        const netPrice = Math.max(0, basePrice - totalDiscount);
+
+        if (invoiceValEl) {
+          invoiceValEl.innerHTML = `R$ ${netPrice.toFixed(2).replace('.', ',')}<span style="font-size:0.75rem; font-weight:400; color:var(--showcase-text-tertiary);">/mês</span>`;
+        }
+        if (discountBadgeEl) {
+          discountBadgeEl.textContent = `-R$ ${totalDiscount}`;
+        }
+        if (invoiceSubEl) {
+          invoiceSubEl.textContent = `${activeReferrals} indicações ativas (R$ ${totalDiscount} de crédito)`;
+        }
+      } catch(e) {
+        console.warn('Erro ao atualizar HUD:', e);
+      }
+    }
+
+    function executeQuickReferral() {
+      if (window.ReferralModule && ReferralModule.simulateNewReferral) {
+        ReferralModule.simulateNewReferral();
+      } else {
+        NotificationCenter.success('Nova assinatura indicada confirmada (+R$ 20,00 de desconto mensal)', 'Programa de Parcerias', 'CRÉDITO');
+      }
+      updateConsoleHUD();
+    }
+
+    function logConsoleEvent(tag, text, tagClass = 'tag-auth') {
+      const terminal = document.getElementById('terminal-output');
+      if (!terminal) return;
+
+      const row = document.createElement('div');
+      row.className = 'terminal-log-line';
+
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+
+      row.innerHTML = `
+        <span class="terminal-time">[${timeStr}]</span>
+        <span class="terminal-tag ${tagClass}">[${tag}]</span>
+        <span class="terminal-text">${text}</span>
+      `;
+
+      terminal.appendChild(row);
+
+      while (terminal.children.length > 80) {
+        terminal.removeChild(terminal.firstChild);
+      }
+
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function clearConsoleLog() {
+      const terminal = document.getElementById('terminal-output');
+      if (terminal) {
+        terminal.innerHTML = '';
+        logConsoleEvent('INIT', 'Buffer de telemetria reiniciado. Aguardando novos eventos do subsistema...', 'tag-sec');
+      }
+    }
+
+    function copyConsoleReport() {
+      const terminal = document.getElementById('terminal-output');
+      if (!terminal) return;
+      const lines = Array.from(terminal.querySelectorAll('.terminal-log-line')).map(el => el.textContent.trim());
+      const payload = lines.join('\n');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).then(() => {
+          NotificationCenter.success('Trilha de logs copiada com sucesso para a área de transferência.', 'Terminal de Telemetria');
+        });
+      } else {
+        NotificationCenter.info('Selecione o texto do console para copiar.', 'Terminal');
+      }
+    }
+
+    function scrollConsoleToTerminal() {
+      switchConsoleTab('modulo-terminal');
+    }
+
+    // =========================================================================
+    // CLICK-BASED WORKSPACE & TABBED MODULE SWITCHER
+    // =========================================================================
+    function switchConsoleTab(targetId) {
+      if (!targetId) targetId = 'modulo-hub';
+
+      const MODULE_NAMES = {
+        'modulo-hub': 'Hub Central de Módulos',
+        'modulo-auth': '01. Identificação & Acesso Híbrido',
+        'modulo-2fa': '02. Segurança Criptográfica & 2FA',
+        'modulo-history': '03. Trilha de Auditoria & Sessões',
+        'modulo-domain': '04. Domínio Personalizado & DNS',
+        'modulo-referral': '05. Faturamento & Conciliação',
+        'modulo-plans': '06. Matriz de Cotas & Galerias RBAC',
+        'modulo-terminal': '07. Live Terminal & Telemetria'
+      };
+
+      // Show target module and hide all other modules (strictly 1 active module at a time)
+      document.querySelectorAll('.module-card').forEach(card => {
+        if (card.id === targetId) {
+          card.classList.add('tab-active');
+          card.style.display = 'block';
+        } else {
+          card.classList.remove('tab-active');
+          card.style.display = 'none';
+        }
+      });
+
+      // Update URL hash smoothly without jump
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, null, `#${targetId}`);
+      }
+
+      // Smooth scroll to top of content
+      const hudEl = document.getElementById('cockpit-telemetry');
+      if (hudEl) {
+        const y = hudEl.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+
+      const tabTitle = MODULE_NAMES[targetId] || targetId;
+      logConsoleEvent('NAV', `Visualização alternada por clique para [${tabTitle}]`, 'tag-plan');
+    }
+
+    // =========================================================================
+    // INTERACTIVE TOTP 2FA SIMULATOR METHODS
+    // =========================================================================
+    function validateSimulatedTOTP() {
+      const input = document.getElementById('demo-2fa-input-token');
+      const val = input ? input.value.trim() : '';
+      const feedback = document.getElementById('demo-2fa-token-feedback');
+
+      if (!val || val.length !== 6 || !/^\d+$/.test(val)) {
+        if (feedback) {
+          feedback.textContent = '✕ CÓDIGO INVÁLIDO: O token precisa ter exatamente 6 dígitos numéricos.';
+          feedback.style.color = '#ef4444';
+        }
+        NotificationCenter.error('Código 2FA rejeitado. Verifique os 6 dígitos numéricos do seu aplicativo.', 'Validação 2FA');
+        logConsoleEvent('2FA', `Tentativa de validação com token incorreto [${val}]`, 'tag-sec');
+        return;
+      }
+
+      if (feedback) {
+        feedback.textContent = `✔ TOKEN [${val}] AUTORIZADO COM SUCESSO • HASH SIMÉTRICO SHA-1 CONFIRMADO`;
+        feedback.style.color = '#10b981';
+      }
+      NotificationCenter.success(`Token ${val} verificado com sucesso via TOTP RFC 6238. Autenticação confirmada!`, '2FA Autorizado', 'CONFIRMADO');
+      logConsoleEvent('2FA', `Desafio de duplo fator autenticado com sucesso [Token: ${val}]`, 'tag-sec');
+    }
+
+    function generateRandomTOTP() {
+      const randomCode = String(Math.floor(100000 + Math.random() * 900000));
+      const input = document.getElementById('demo-2fa-input-token');
+      const feedback = document.getElementById('demo-2fa-token-feedback');
+      if (input) input.value = randomCode;
+      if (feedback) {
+        feedback.textContent = `NOVO TOKEN DINÂMICO GERADO: ${randomCode} (Válido pelos próximos 30s)`;
+        feedback.style.color = '#60a5fa';
+      }
+      NotificationCenter.info(`Novo código TOTP temporário gerado: ${randomCode}`, 'Gerador de Token');
+      logConsoleEvent('2FA', `Novo token de teste emitido: ${randomCode}`, 'tag-sec');
+    }
+
+    function copyBase32Key() {
+      const key = 'JBSWY3DPEHPK3PXP';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(key).then(() => {
+          NotificationCenter.success(`Chave Base32 (${key}) copiada para a área de transferência.`, 'Chave 2FA');
+        });
+      } else {
+        NotificationCenter.info(`Chave Base32: ${key}`, 'Chave 2FA');
+      }
+      logConsoleEvent('2FA', 'Chave simétrica Base32 exportada para transferência', 'tag-sec');
+    }
+
+    // =========================================================================
+    // AUDIT HISTORY FILTER METHODS
+    // =========================================================================
+    function filterAuditHistory(filter) {
+      document.querySelectorAll('#filter-audit-all, #filter-audit-success, #filter-audit-failed').forEach(btn => {
+        btn.classList.remove('primary');
+      });
+      const activeBtn = document.getElementById(`filter-audit-${filter}`);
+      if (activeBtn) activeBtn.classList.add('primary');
+
+      const rows = document.querySelectorAll('#login-history-tbody tr');
+      let visibleCount = 0;
+
+      rows.forEach(tr => {
+        const text = tr.textContent;
+        const isSuccess = text.includes('Sucesso') || text.includes('●');
+        const isFailed = text.includes('Bloqueado') || text.includes('✕');
+
+        if (filter === 'all') {
+          tr.style.display = '';
+          visibleCount++;
+        } else if (filter === 'success') {
+          tr.style.display = isSuccess ? '' : 'none';
+          if (isSuccess) visibleCount++;
+        } else if (filter === 'failed') {
+          tr.style.display = isFailed ? '' : 'none';
+          if (isFailed) visibleCount++;
+        }
+      });
+
+      const summary = document.getElementById('audit-count-summary');
+      if (summary) {
+        summary.textContent = `${visibleCount} registro(s) exibido(s)`;
+      }
+
+      logConsoleEvent('AUDIT', `Filtro de auditoria aplicado: [${filter.toUpperCase()}] (${visibleCount} registros)`, 'tag-auth');
+    }
+
+    function searchAuditHistory(query) {
+      query = (query || '').toLowerCase().trim();
+      const rows = document.querySelectorAll('#login-history-tbody tr');
+      let visibleCount = 0;
+      rows.forEach(tr => {
+        const text = tr.textContent.toLowerCase();
+        const matches = !query || text.includes(query);
+        tr.style.display = matches ? '' : 'none';
+        if (matches) visibleCount++;
+      });
+      const summary = document.getElementById('audit-count-summary');
+      if (summary) {
+        summary.textContent = `${visibleCount} registro(s) exibido(s)`;
+      }
+    }
+
+    // =========================================================================
+    // RFC 6238 TOTP ROTATION TIMER ENGINE
+    // =========================================================================
+    let totpTimeRemaining = 30;
+    let totpInterval = null;
+    function startTOTPTimer() {
+      if (totpInterval) clearInterval(totpInterval);
+      totpTimeRemaining = 30;
+      
+      totpInterval = setInterval(() => {
+        totpTimeRemaining--;
+        if (totpTimeRemaining <= 0) {
+          totpTimeRemaining = 30;
+          generateRandomTOTP();
+        }
+        const bar = document.getElementById('totp-timer-bar');
+        const text = document.getElementById('totp-timer-seconds');
+        if (bar) {
+          const pct = Math.max(0, Math.min(100, (totpTimeRemaining / 30) * 100));
+          bar.style.width = pct + '%';
+          if (totpTimeRemaining <= 5) {
+            bar.style.background = '#ef4444';
+          } else if (totpTimeRemaining <= 10) {
+            bar.style.background = '#f59e0b';
+          } else {
+            bar.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+          }
+        }
+        if (text) {
+          text.textContent = `${totpTimeRemaining}s restantes`;
+        }
+      }, 1000);
+    }
+
+    // =========================================================================
+    // DNS PROPAGATION PROBE SIMULATOR
+    // =========================================================================
+    function testDNSPropagation() {
+      const btn = document.getElementById('btn-verify-dns');
+      const ind = document.getElementById('dns-status-indicator');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Verificando 24 POPs...';
+      }
+      NotificationCenter.info('Consultando servidores DNS globais (Cloudflare, Google, AWS)...', 'Auditoria DNS Anycast');
+      logConsoleEvent('DNS', 'Disparando probe de propagação DNS em 24 POPs Anycast...', 'tag-dns');
+
+      setTimeout(() => {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Verificar Propagação';
+        }
+        if (ind) {
+          ind.innerHTML = '<span style="color:#10b981;">✔ PROPAGAÇÃO 100% CONCLUÍDA (24/24 POPS)</span>';
+        }
+        NotificationCenter.success('Domínio mariaclarkfoto.com.br propagado globalmente com latência de 14ms.', 'DNS Sincronizado');
+        logConsoleEvent('DNS', 'Resposta autoritativa recebida de todos os resolvedores. TTL: 300s.', 'tag-dns');
+      }, 1100);
+    }
+
+    // =========================================================================
+    // INTERACTIVE CLI COMMAND RUNNER
+    // =========================================================================
+    function submitTerminalCli() {
+      const input = document.getElementById('terminal-cli-input');
+      if (!input) return;
+      const cmd = input.value.trim().toLowerCase();
+      if (!cmd) return;
+      input.value = '';
+
+      logConsoleEvent('EXEC', `picdrop> ${cmd}`, 'tag-sec');
+
+      if (cmd === 'help') {
+        logConsoleEvent('INFO', 'Comandos disponíveis: status, ping, audit, clear, rbac, 2fa, info', 'tag-plan');
+      } else if (cmd === 'status') {
+        const plan = PlansModule.getCurrentPlan ? PlansModule.getCurrentPlan().toUpperCase() : 'STUDIO';
+        logConsoleEvent('STATUS', `NODE: cluster-sa-east-1 • LATÊNCIA: 12ms • PLANO: ${plan} • TLS 1.3: ATIVO`, 'tag-auth');
+      } else if (cmd === 'ping') {
+        const ms = Math.floor(9 + Math.random() * 8);
+        logConsoleEvent('PING', `64 bytes from sa-east-1.picdrop.io: icmp_seq=1 ttl=58 time=${ms}.4 ms`, 'tag-dns');
+      } else if (cmd === 'audit') {
+        const rows = document.querySelectorAll('#login-history-tbody tr').length;
+        logConsoleEvent('AUDIT', `Trilha de auditoria contém ${rows} eventos registrados sob TLS 1.3`, 'tag-auth');
+      } else if (cmd === 'clear') {
+        clearConsoleLog();
+      } else if (cmd === 'rbac') {
+        logConsoleEvent('RBAC', 'Limites ativos: 500GB Storage • Galerias Ilimitadas • Domínio Próprio Ativo • PIN AES-256', 'tag-plan');
+      } else if (cmd === '2fa') {
+        logConsoleEvent('2FA', 'Algoritmo RFC 6238 TOTP • Janela 30s • Chave Base32 Ativa', 'tag-sec');
+      } else {
+        logConsoleEvent('WARN', `Comando não reconhecido: "${cmd}". Digite "help" para lista de comandos.`, 'tag-sec');
+      }
+    }
+
+    // Intercept NotificationCenter to pipe live events directly into the Diagnostic Stream
+    if (window.NotificationCenter && typeof NotificationCenter.show === 'function') {
+      const originalShow = NotificationCenter.show;
+      NotificationCenter.show = function(options) {
+        const result = originalShow.apply(this, arguments);
+        try {
+          const opts = typeof options === 'string' ? { message: options } : (options || {});
+          const type = opts.type || 'info';
+          let tag = 'SYS';
+          let tagClass = 'tag-auth';
+          const text = (opts.title ? `[${opts.title}] ` : '') + (opts.message || '');
+          
+          if (type === 'error') {
+            tag = 'SECURITY';
+            tagClass = 'tag-sec';
+          } else if (text.includes('Google') || text.includes('Facebook') || text.includes('Sessão') || text.includes('Login') || text.includes('Identificador')) {
+            tag = 'AUTH';
+            tagClass = 'tag-auth';
+          } else if (text.includes('2FA') || text.includes('Token') || text.includes('TOTP')) {
+            tag = '2FA';
+            tagClass = 'tag-sec';
+          } else if (text.includes('Galeria') || text.includes('Lightroom') || text.includes('PIN')) {
+            tag = 'STUDIO';
+            tagClass = 'tag-gal';
+          } else if (text.includes('Domínio') || text.includes('DNS') || text.includes('CNAME')) {
+            tag = 'DNS';
+            tagClass = 'tag-dns';
+          } else if (text.includes('Indicação') || text.includes('Faturamento') || text.includes('Crédito') || text.includes('R$')) {
+            tag = 'BILLING';
+            tagClass = 'tag-bill';
+          } else if (text.includes('Plano') || text.includes('Governança') || text.includes('Upgrade') || text.includes('Recursos')) {
+            tag = 'RBAC';
+            tagClass = 'tag-plan';
+          }
+          logConsoleEvent(tag, text, tagClass);
+        } catch(err) {
+          console.warn('Erro no stream do terminal:', err);
+        }
+        return result;
+      };
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      SecurityModule.init();
+      PlansModule.init();
+      DomainsModule.init();
+      ReferralModule.init();
+      GalleriesModule.init();
+      startTOTPTimer();
+
+      // Seed Live Terminal Diagnostic Stream
+      logConsoleEvent('INIT', 'Daemon PicDrop inicializado no host 0.0.0.0:4000 (TLS 1.3 ativo)', 'tag-sec');
+      logConsoleEvent('AUTH', 'Sessão mestre verificada: Maria Clark (@mariaclark / maria@clark.com)', 'tag-auth');
+      logConsoleEvent('RBAC', 'Matriz de limites alocada: Modo STUDIO (500 GB, CNAME irrestrito)', 'tag-plan');
+      logConsoleEvent('DNS', 'Provedor DNS zone check: studio.mariaclark.com.br apontado para CNAME picdrop.app', 'tag-dns');
+      logConsoleEvent('BILLING', 'Motor de parcerias sincronizado: 3 indicações ativas (-R$ 60,00/mês abatidos)', 'tag-bill');
+
+      updateConsoleHUD();
+
+      // Initialize click-based view: check URL hash or default to modulo-hub
+      const hash = window.location.hash ? window.location.hash.replace('#', '') : '';
+      const validModules = ['modulo-hub', 'modulo-auth', 'modulo-2fa', 'modulo-history', 'modulo-domain', 'modulo-referral', 'modulo-plans', 'modulo-terminal'];
+      if (validModules.includes(hash)) {
+        switchConsoleTab(hash);
+      } else {
+        switchConsoleTab('modulo-hub');
+      }
+
+      // Trigger initial domain list
+      if (window.DomainsModule) {
+        document.getElementById('btn-search-domain')?.click();
+      }
+    });
+  </script>
+</body>
+</html>
